@@ -88,10 +88,10 @@ class CEI_Crawler():
             '__ASYNCPOST': 'false'
         }
 
-        print("------ Agents Found")
-
         agents = soup.find("select", {"name": "ctl00$ContentPlaceHolder1$ddlAgentes"}).findAll("option")
+        print("------ {} Agents Found".format(len(agents)))
         for agent in agents:
+
             self.get_agent_accounts(agent, data)
             
 
@@ -102,6 +102,8 @@ class CEI_Crawler():
         agent_value = agent.get('value') 
             
         if int(agent_value) != -1:
+
+            self.transactions[agent_value] = {}
 
             data['ctl00$ContentPlaceHolder1$ddlAgentes'] = agent_value
 
@@ -133,9 +135,8 @@ class CEI_Crawler():
                 'ctl00$ContentPlaceHolder1$btnConsultar': 'Consultar'
             }
 
-            print("------ Agent {} - Accounts Found".format(agent_value))
-
             accounts = soup.find("select", {"name": "ctl00$ContentPlaceHolder1$ddlContas"}).findAll("option")
+            print("------ Agent {} - {} Accounts Found".format(agent_value, len(accounts)))
             for account in accounts:
 
                 self.get_account_transactions(agent_value, account, data)
@@ -145,6 +146,8 @@ class CEI_Crawler():
         url = "/CEI_Responsivo/negociacao-de-ativos.aspx"         
 
         account_value = account.get('value') 
+
+        self.transactions[agent_value][account_value] = []
 
         data['ctl00$ContentPlaceHolder1$ddlContas'] = account_value
 
@@ -168,11 +171,10 @@ class CEI_Crawler():
                 
                 parsed_transactions.append(parsed_transaction)
 
-            self.transactions[agent_value] = parsed_transactions
+            self.transactions[agent_value][account_value] = parsed_transactions
 
-            print("------ Agent {} - Account {} - Transactions Found".format(agent_value, account_value))
+            print("------ Agent {} - Account {} - {} Transactions Found".format(agent_value, account_value, len(parsed_transactions)))
         except Exception as e:
-            print(e)
             print("------ Agent {} - Account {} - No Transactions Found".format(agent_value, account_value))
 
 c = CEI_Crawler()
