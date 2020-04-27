@@ -4,7 +4,7 @@ import re
 
 CPF = "CPF"
 SENHA = "SENHA"
-CEI_BASE_URL = 'https://cei.b3.com.br'
+CEI_BASE_URL = 'https://cei.b3.com.br/CEI_Responsivo/'
 
 #FIX DATE RANGE
 DATE_BEGIN = '05/11/2018'
@@ -20,12 +20,11 @@ def clean_string(s):
 class CEI_Crawler():
 
     def __init__(self):
+        self.session = requests.Session()
         self.login()
         self.transactions = {}
 
     def login(self):
-
-        self.session = requests.Session()
 
         page = self.session.get(CEI_BASE_URL, verify=False)
         soup = BeautifulSoup(page.content, 'lxml')
@@ -49,7 +48,7 @@ class CEI_Crawler():
             'ctl00$ContentPlaceHolder1$smLoad': 'ctl00$ContentPlaceHolder1$UpdatePanel1|ctl00$ContentPlaceHolder1$btnLogar',
         }
     
-        self.session.post(CEI_BASE_URL + "/CEI_Responsivo/", data=data, verify=False)
+        self.session.post(CEI_BASE_URL, data=data, verify=False)
 
         print("------ Login Done")
 
@@ -59,9 +58,7 @@ class CEI_Crawler():
 
     def get_agents(self):
 
-        url = "/CEI_Responsivo/negociacao-de-ativos.aspx"
-
-        page = self.session.get(CEI_BASE_URL + url, verify=False)
+        page = self.session.get(CEI_BASE_URL + "negociacao-de-ativos.aspx", verify=False)
         
         soup = BeautifulSoup(page.content, 'lxml')
 
@@ -95,9 +92,7 @@ class CEI_Crawler():
             self.get_agent_accounts(agent, data)
             
 
-    def get_agent_accounts(self, agent, data):
-
-        url = "/CEI_Responsivo/negociacao-de-ativos.aspx"         
+    def get_agent_accounts(self, agent, data):         
 
         agent_value = agent.get('value') 
             
@@ -107,7 +102,7 @@ class CEI_Crawler():
 
             data['ctl00$ContentPlaceHolder1$ddlAgentes'] = agent_value
 
-            page = self.session.post(CEI_BASE_URL + url, data=data, verify=False)
+            page = self.session.post(CEI_BASE_URL + "negociacao-de-ativos.aspx", data=data, verify=False)
 
             soup = BeautifulSoup(page.content, 'lxml')
 
@@ -141,9 +136,7 @@ class CEI_Crawler():
 
                 self.get_account_transactions(agent_value, account, data)
 
-    def get_account_transactions(self, agent_value, account, data):
-
-        url = "/CEI_Responsivo/negociacao-de-ativos.aspx"         
+    def get_account_transactions(self, agent_value, account, data):       
 
         account_value = account.get('value') 
 
@@ -151,7 +144,7 @@ class CEI_Crawler():
 
         data['ctl00$ContentPlaceHolder1$ddlContas'] = account_value
 
-        page = self.session.post(CEI_BASE_URL + url, data=data, verify=False)
+        page = self.session.post(CEI_BASE_URL + "negociacao-de-ativos.aspx", data=data, verify=False)
 
         soup = BeautifulSoup(page.content, 'lxml')
 
