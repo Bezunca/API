@@ -55,13 +55,13 @@ __Descrição de campos:__
   > Algum tipo de indicador de estado da API, talvez indique que a API conseguiu responder com sucesso
 - `.Msg.dtTm`: `string`
   > Data do pregão
-- `TradgFlr.TradgFlrSts.desc`: `string`
+- `.TradgFlr.TradgFlrSts.desc`: `string`
   > Estado do pregão. Possíveis valores:
   >  - `E`: Pregão encerrado
   >  - _outros_: Pregão em andamento
-- `TradgFlr.grssAmt`: `float?`
+- `.TradgFlr.grssAmt`: `float?`
   > Volume do pregão
-- `TradgFlr.qty`: `int?`
+- `.TradgFlr.qty`: `int?`
   > Quantidade (?) do pregão
 
 </p>
@@ -309,9 +309,48 @@ TODO
 
 > De acordo com testes as api's abaixo só retornam dados dos últimos 10ish dias excluindo o dia atual
 
+<details>
+<summary>Consulta de datas com dados disponíveis</summary>
+<p>
+
+__Descrição:__ Retorna lista de datas nas quais estão disponíveis os dados da cotações.
+Parece não ser acurado. Existem datas fora dos períodos retornados nessa rota com dados disponíveis
+Normalmente retorna lista contendo os ultimos dez dias úteis.
+
+__URL:__ `https://arquivos.b3.com.br/apinegocios/dates`
+
+__Método:__ `GET`
+
+__Tipo de retorno:__ `application/json`
+
+__Exemplo:__
+```shell
+curl https://arquivos.b3.com.br/apinegocios/dates
+```
+```json
+[
+  "2020-04-24",
+  "2020-04-23",
+  "2020-04-22",
+  "2020-04-20",
+  "2020-04-17",
+  "2020-04-16",
+  "2020-04-15",
+  "2020-04-14",
+  "2020-04-13",
+  "2020-04-09"
+]
+```
+
+__Descrição de campos:__
+- `.`: `string[]`
+  > Lista contendo datas com dados de cotação disponíveis
+
+</p>
+</details>
 
 <details>
-<summary>Consulta simbolos de ativos</summary>
+<summary>Consulta de simbolos de ativos</summary>
 <p>
 
 __Descrição:__ Dado um texto de busca, retorna uma lista de simbolos de ativos semelhantes.
@@ -1018,46 +1057,6 @@ __Descrição de campos:__
   > Alinhamento do valor (???)
 - `.values`: `Any[N][...]`
   > Lista das linhas contendo os valores correspondentes as colunas determinadas em `.columns` (Valores da tabela)
-
-</p>
-</details>
-
-<details>
-<summary>Consulta quais datas há dados disponíveis</summary>
-<p>
-
-__Descrição:__ Retorna lista de datas nas quais estão disponíveis os dados da cotações.
-Parece não ser acurado. Existem datas fora dos períodos retornados nessa rota com dados disponíveis
-Normalmente retorna lista contendo os ultimos dez dias úteis.
-
-__URL:__ `https://arquivos.b3.com.br/apinegocios/dates`
-
-__Método:__ `GET`
-
-__Tipo de retorno:__ `application/json`
-
-__Exemplo:__
-```shell
-curl https://arquivos.b3.com.br/apinegocios/dates
-```
-```json
-[
-  "2020-04-24",
-  "2020-04-23",
-  "2020-04-22",
-  "2020-04-20",
-  "2020-04-17",
-  "2020-04-16",
-  "2020-04-15",
-  "2020-04-14",
-  "2020-04-13",
-  "2020-04-09"
-]
-```
-
-__Descrição de campos:__
-- `.`: `string[]`
-  > Lista contendo datas com dados de cotação disponíveis
 
 </p>
 </details>
