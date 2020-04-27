@@ -1015,7 +1015,7 @@ __Descrição de campos:__
 - `.columns[].columnAlignment`: `int`
   > Alinhamento da coluna (???)
 - `.columns[].valueAlignment`: `int`
-  > Alinhamento do valoe (???)
+  > Alinhamento do valor (???)
 - `.values`: `Any[N][...]`
   > Lista das linhas contendo os valores correspondentes as colunas determinadas em `.columns` (Valores da tabela)
 
