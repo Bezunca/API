@@ -52,7 +52,7 @@ curl http://cotacao.b3.com.br/mds/api/v1/TradingFloorInfo
 
 __Descrição de campos:__
 - `.BizSts.cd`: `string`
-  > Algum tipo de estatus da API, talvez indique que a API conseguiu responder com sucesso
+  > Algum tipo de indicador de estado da API, talvez indique que a API conseguiu responder com sucesso
 - `.Msg.dtTm`: `string`
   > Data do pregão
 - `TradgFlr.TradgFlrSts.desc`: `string`
@@ -180,7 +180,7 @@ curl http://cotacao.b3.com.br/mds/api/v1/InstrumentPriceFluctuation/ibov
 
 __Descrição de campos:__
 - `.BizSts.cd`: `string`
-  > Algum tipo de estatus da API, talvez indique que a API conseguiu responder com sucesso
+  > Algum tipo de indicador de estado da API, talvez indique que a API conseguiu responder com sucesso
 - `.Msg.dtTm`: `string`
   > Data correspondente a quando os dados foram consultados (Empiracamente parece ser só um Date.now() no lado do servidor)
 - `.SctyHghstIncrLst`: `Object[5]`
@@ -278,7 +278,7 @@ curl http://cotacao.b3.com.br/mds/api/v1/InstrumentTradeVolume/vista
 
 __Descrição de campos:__
 - `.BizSts.cd`: `string`
-  > Algum tipo de estatus da API, talvez indique que a API conseguiu responder com sucesso
+  > Algum tipo de indicador de estado da API, talvez indique que a API conseguiu responder com sucesso
 - `.Msg.dtTm`: `string`
   > Data correspondente a quando os dados foram consultados (Empiracamente parece ser só um Date.now() no lado do servidor)
 - `.Volume`: `Object[5]`
