@@ -15,7 +15,7 @@ URL base:
 <p>
 
 __Descrição:__ Página utilizada para capturar dados que serão utilizados como input do `Formulário de Login`. Os dados são:
-- Variáveis internas do CEI para controle de sessão.
+- Variáveis internas do CEI para controle de sessão (CSRF tokens).
 
 __URL:__ `https://cei.b3.com.br/CEI_Responsivo`
 
@@ -23,7 +23,7 @@ __Método:__ GET
 
 __Tipo do Retorno:__ `text/html`
  
-__Scrap (Exemplo):__ 
+__Scrape (Exemplo):__ 
 
 Capturar o atributo `value` dos elementos abaixo:
 
@@ -45,7 +45,7 @@ Capturar o atributo `value` dos elementos abaixo:
 
 <p>
 
-__Descrição:__ Irá permitir o acesso, dentro da sessão, nas demais URL's utilizadas.
+__Descrição:__ Irá permitir o acesso, dentro da sessão, nas demais URLs utilizadas.
 
 __URL:__ `https://cei.b3.com.br/CEI_Responsivo`
 
@@ -94,7 +94,7 @@ __Tipo do Retorno:__ `text/html`
 <p>
 
 __Descrição:__ Página utilizada para capturar dados que serão utilizados como input da `Escolha da Instituição`. Os dados são:
-- Variáveis internas do CEI para controle de sessão.
+- Variáveis internas do CEI para controle de sessão (CSRF tokens).
 - Instituições Financeiras do usuário.
 
 __URL:__ `https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx`
@@ -103,7 +103,7 @@ __Método:__ GET
 
 __Tipo do Retorno:__ `text/html`
  
-__Scrap (Exemplo):__ 
+__Scrape (Exemplo):__ 
 
 Capturar o atributo `value` dos elementos abaixo:
 
@@ -139,7 +139,7 @@ Capturar o atributo `value` de todas as instituições financeiras do usuário n
 <p>
 
 __Descrição:__ Página utilizada para capturar dados que serão utilizados como input da `Escolha da Conta`. Os dados são:
-- Variáveis internas do CEI para controle de sessão.
+- Variáveis internas do CEI para controle de sessão (CSRF tokens).
 - Contas de uma Instituição Financeira do usuário.
 
 __URL:__ `https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx`
@@ -182,7 +182,7 @@ __Form Data (Exemplo):__
 
 __Tipo do Retorno:__ `text/html`
 
-__Scrap (Exemplo):__ 
+__Scrape (Exemplo):__ 
 
 Capturar o atributo `value` dos elementos abaixo:
 
@@ -257,7 +257,7 @@ __Form Data (Exemplo):__
 
 __Tipo do Retorno:__ `text/html`
 
-__Scrap (Exemplo):__ 
+__Scrape (Exemplo):__ 
 
 Capturar os atributos desejados de todas as Negociações de Ativos no `tbody` abaixo:
 
