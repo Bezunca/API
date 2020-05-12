@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
 type Security struct {
@@ -17,7 +18,8 @@ func GetCurrentPrice(ticker string) Security {
 	// Gets the price of a given ticker through B3's public API
 	// Prices are 15 minutes in the past
 
-	url := fmt.Sprintf("https://arquivos.b3.com.br/apinegocios/ticker/%v/2020-05-12", ticker)
+	date := fmt.Sprint(time.Now().Format("2006-01-02"))
+	url := fmt.Sprintf("https://arquivos.b3.com.br/apinegocios/ticker/%v/%v", ticker, date)
 	response, err := http.Get(url)
 
 	if err != nil {
