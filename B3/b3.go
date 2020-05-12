@@ -8,12 +8,15 @@ import (
 	"os"
 )
 
-type Security struct{
-	Ticker string
-	Price float32
+type Security struct {
+	Ticker string  // Security symbol
+	Price  float32 // Security's value 15 min in the past
 }
 
 func GetCurrentPrice(ticker string) Security {
+	// Gets the price of a given ticker through B3's public API
+	// Prices are 15 minutes in the past
+
 	url := fmt.Sprintf("https://arquivos.b3.com.br/apinegocios/ticker/%v/2020-05-12", ticker)
 	response, err := http.Get(url)
 
@@ -36,6 +39,7 @@ func GetCurrentPrice(ticker string) Security {
 }
 
 func GetCurrentPriceList(tickers []string) []Security {
+	// Gets the price given a list of security ticker symbols
 	prices := make([]Security, len(tickers))
 	for i, ticker := range tickers {
 		prices[i] = GetCurrentPrice(ticker)
