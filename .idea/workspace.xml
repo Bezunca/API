@@ -20,9 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b3b563ac-81be-480a-b4a2-84ce221c2918" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/CEI/api_trades.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CEI/base/trades.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CEI/utils/http.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CEI/utils/transformation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CEI/base/trades.go" beforeDir="false" afterPath="$PROJECT_DIR$/CEI/base/trades.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CEI/cei.go" beforeDir="false" afterPath="$PROJECT_DIR$/CEI/cei.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CEI/utils/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/CEI/utils/http.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +68,7 @@
       <recent name="$PROJECT_DIR$/cei" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build api_trades.go">
+  <component name="RunManager" selected="Go Build.go build cei.go (2)">
     <configuration name="go build api_trades.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Bezunca" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -83,6 +85,14 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration name="go build cei.go (2)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Bezunca" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/CEI/cei.go" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build cei.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Bezunca" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -94,6 +104,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build cei.go (2)" />
         <item itemvalue="Go Build.go build api_trades.go" />
         <item itemvalue="Go Build.go build cei.go (1)" />
         <item itemvalue="Go Build.go build cei.go" />
@@ -124,10 +135,10 @@
       <screen x="0" y="0" width="1366" height="736" />
     </state>
     <state x="146" y="25" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.736@0.0.1366.736" timestamp="1589307083076" />
-    <state x="356" y="0" key="#go_build_api_trades.go" timestamp="1589376597387">
+    <state x="356" y="0" key="#go_build_api_trades.go" timestamp="1589382347398">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state x="356" y="0" key="#go_build_api_trades.go/0.0.1366.736@0.0.1366.736" timestamp="1589376597387" />
+    <state x="356" y="0" key="#go_build_api_trades.go/0.0.1366.736@0.0.1366.736" timestamp="1589382347398" />
     <state x="356" y="0" key="#go_build_cei.go" timestamp="1589306976481">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
@@ -136,38 +147,38 @@
       <screen x="0" y="0" width="1366" height="736" />
     </state>
     <state x="751" y="162" key="#xdebugger.evaluate/0.0.1366.736@0.0.1366.736" timestamp="1589379072920" />
-    <state width="1324" height="380" key="GridCell.Tab.0.bottom" timestamp="1589381585465">
+    <state width="1324" height="278" key="GridCell.Tab.0.bottom" timestamp="1589391647125">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state width="1324" height="380" key="GridCell.Tab.0.bottom/0.0.1366.736@0.0.1366.736" timestamp="1589381585465" />
-    <state width="1324" height="380" key="GridCell.Tab.0.center" timestamp="1589381585464">
+    <state width="1324" height="278" key="GridCell.Tab.0.bottom/0.0.1366.736@0.0.1366.736" timestamp="1589391647125" />
+    <state width="1324" height="278" key="GridCell.Tab.0.center" timestamp="1589391647124">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state width="1324" height="380" key="GridCell.Tab.0.center/0.0.1366.736@0.0.1366.736" timestamp="1589381585464" />
-    <state width="1324" height="380" key="GridCell.Tab.0.left" timestamp="1589381585463">
+    <state width="1324" height="278" key="GridCell.Tab.0.center/0.0.1366.736@0.0.1366.736" timestamp="1589391647124" />
+    <state width="1324" height="278" key="GridCell.Tab.0.left" timestamp="1589391647124">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state width="1324" height="380" key="GridCell.Tab.0.left/0.0.1366.736@0.0.1366.736" timestamp="1589381585463" />
-    <state width="1324" height="380" key="GridCell.Tab.0.right" timestamp="1589381585465">
+    <state width="1324" height="278" key="GridCell.Tab.0.left/0.0.1366.736@0.0.1366.736" timestamp="1589391647124" />
+    <state width="1324" height="278" key="GridCell.Tab.0.right" timestamp="1589391647125">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state width="1324" height="380" key="GridCell.Tab.0.right/0.0.1366.736@0.0.1366.736" timestamp="1589381585465" />
-    <state width="1324" height="218" key="GridCell.Tab.1.bottom" timestamp="1589379123316">
+    <state width="1324" height="278" key="GridCell.Tab.0.right/0.0.1366.736@0.0.1366.736" timestamp="1589391647125" />
+    <state width="1324" height="218" key="GridCell.Tab.1.bottom" timestamp="1589391574546">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state width="1324" height="218" key="GridCell.Tab.1.bottom/0.0.1366.736@0.0.1366.736" timestamp="1589379123316" />
-    <state width="1324" height="218" key="GridCell.Tab.1.center" timestamp="1589379123315">
+    <state width="1324" height="218" key="GridCell.Tab.1.bottom/0.0.1366.736@0.0.1366.736" timestamp="1589391574546" />
+    <state width="1324" height="218" key="GridCell.Tab.1.center" timestamp="1589391574545">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state width="1324" height="218" key="GridCell.Tab.1.center/0.0.1366.736@0.0.1366.736" timestamp="1589379123315" />
-    <state width="1324" height="218" key="GridCell.Tab.1.left" timestamp="1589379123315">
+    <state width="1324" height="218" key="GridCell.Tab.1.center/0.0.1366.736@0.0.1366.736" timestamp="1589391574545" />
+    <state width="1324" height="218" key="GridCell.Tab.1.left" timestamp="1589391574544">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state width="1324" height="218" key="GridCell.Tab.1.left/0.0.1366.736@0.0.1366.736" timestamp="1589379123315" />
-    <state width="1324" height="218" key="GridCell.Tab.1.right" timestamp="1589379123316">
+    <state width="1324" height="218" key="GridCell.Tab.1.left/0.0.1366.736@0.0.1366.736" timestamp="1589391574544" />
+    <state width="1324" height="218" key="GridCell.Tab.1.right" timestamp="1589391574545">
       <screen x="0" y="0" width="1366" height="736" />
     </state>
-    <state width="1324" height="218" key="GridCell.Tab.1.right/0.0.1366.736@0.0.1366.736" timestamp="1589379123316" />
+    <state width="1324" height="218" key="GridCell.Tab.1.right/0.0.1366.736@0.0.1366.736" timestamp="1589391574545" />
     <state x="172" y="3" width="1022" height="732" key="SettingsEditor" timestamp="1589302917773">
       <screen x="0" y="0" width="1366" height="736" />
     </state>

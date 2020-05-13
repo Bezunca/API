@@ -10,13 +10,13 @@ import (
 )
 
 type cookieJar struct {
-	jar map[string] []*http.Cookie
+	jar map[string][]*http.Cookie
 }
 
-func (p* cookieJar) SetCookies(u *url.URL, cookies []*http.Cookie) {
+func (p *cookieJar) SetCookies(u *url.URL, cookies []*http.Cookie) {
 	//fmt.Printf("The URL is : %s\n", u.String())
 	//fmt.Printf("The cookie being set is : %s\n", cookies)
-	p.jar [u.Host] = cookies
+	p.jar[u.Host] = cookies
 }
 
 func (p *cookieJar) Cookies(u *url.URL) []*http.Cookie {
@@ -25,15 +25,15 @@ func (p *cookieJar) Cookies(u *url.URL) []*http.Cookie {
 	return p.jar[u.Host]
 }
 
-var jar = &cookieJar{make(map[string] []*http.Cookie)}
+var jar = &cookieJar{make(map[string][]*http.Cookie)}
 
 var tr = &http.Transport{
-	TLSClientConfig: &tls.Config{InsecureSkipVerify : true},
+	TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 }
 
 var client = http.Client{
 	Transport: tr,
-	Jar: jar,
+	Jar:       jar,
 }
 
 func GetPage(url string) (*html.Node, error) {
