@@ -71,7 +71,7 @@ antes da vírgula e 2 dígitos após a vírgula (e.g. o número `00123456789.00`
 
 | Campo                                                                                           | Valor                                                                                                                                                                                                                                                                                                       | Tipo                 | Tamanho (caracteres) | Offset (caracteres) |
 |-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|----------------------|---------------------|
-| Tipo de registro (TIPREG)                                                                       | Fixo `00`                                                                                                                                                                                                                                                                                                   | Número               | 2                    | 0                   |
+| Tipo de registro (TIPREG)                                                                       | Fixo `01`                                                                                                                                                                                                                                                                                                   | Número               | 2                    | 0                   |
 | Data da coleta                                                                                  | Data no formato `YYYYMMDD`                                                                                                                                                                                                                                                                                  | Int                  | 8                    | 2                   |
 | Código BDI (CODBDI)                                                                             | Índice usado para classificar os ativos no informativo diário. Verificar tabela Códigos BDI.                                                                                                                                                                                                                | String               | 2                    | 10                  |
 | Ticker (CODNEG)                                                                                 | Símbolo do ativo (ticker symbol)                                                                                                                                                                                                                                                                            | String               | 12                   | 12                  |
@@ -98,6 +98,38 @@ antes da vírgula e 2 dígitos após a vírgula (e.g. o número `00123456789.00`
 | Código do ativo no sistema ISIN ou código interno do ativo (CODISI)                             | Código do papel no sistema ISIN desde 05/15/1995                                                                                                                                                                                                                                                            | String               | 12                   | 230                 |
 | Número de distribuição do ativo (DISMES)                                                        | Número sequencial do ativo de acordo com a lei vigente (whatever that means...)                                                                                                                                                                                                                             | Int                  | 3                    | 242                 |
 
+Dessa forma, o exemplo dado acima ficaria:
+
+| Campo                                                                                           | Valor                   |
+|-------------------------------------------------------------------------------------------------|-------------------------|
+| Tipo de registro (TIPREG)                                                                       | `01`                    |
+| Data da coleta                                                                                  | `20190124`              |
+| Código BDI (CODBDI)                                                                             | `02`                    |
+| Ticker (CODNEG)                                                                                 | `ITSA4       `          |
+| Tipo de mercado (TPMERC)                                                                        | `010`                   |
+| Abreviação da empresa (NOMRES)                                                                  | `ITAUSA      `          |
+| Especificação do ativo (ESPECI)                                                                 | `PN      N1`            |
+| Tempo em dias para expiração no mercado futuro (PRAZOT)                                         | *3 caracteres em branco |
+| Moeda de referência (MODREF)                                                                    | `R$  `                  |
+| Preço de abertura (PREABE)                                                                      | `0000000001300`         |
+| Preço máximo (PREMAX)                                                                           | `0000000001335`         |
+| Preço mínimo (PREMIN)                                                                           | `0000000001300`         |
+| Preço médio (PREMED)                                                                            | `0000000001315`         |
+| Preço de fechamento (PREULT)                                                                    | `0000000001320`         |
+| Preço da melhor oferta de compra (PREOFC)                                                       | `0000000001319`         |
+| Preço da melhor oferta de venda (PREOFV)                                                        | `0000000001320`         |
+| Total de trades (TOTNEG)                                                                        | `40515`                 |
+| Quantidade total negociada (QUATOT)                                                             | `000000000038730300`    |
+| Volume total negociado (VOLTOT)                                                                 | `000000050950264600`    |
+| Strike de opções ou quantidade de contratos no mercado futuro (PREEXE)                          | `0000000000000`         |
+| Strike ou quantidade de contratos de opções ou indicador de correção do mercado futuro (INDOPC) | `0`                     |
+| Data de vencimento (DATVEN)                                                                     | `99991231`              |
+| Fator de cotação (FATCOT)                                                                       | `0000001`               |
+| Strike de opções em pontos ou quantidade de contratos em pontos de contratos futuros (PTOEXE)   | `0000000000000`         |
+| Código do ativo no sistema ISIN ou código interno do ativo (CODISI)                             | `BRITSAACNPR7`          |
+| Número de distribuição do ativo (DISMES)                                                        | `389`                   |
+
+
 ### Rodapé
 
 Ao final de cada arquivo está um rodapé. O rodapé contem exatamente os mesmos campos que o cabeçalho acrescido no número
@@ -105,7 +137,7 @@ de registros (número de linhas) do arquivo.
 
 | Campo                      | Valor                             | Tipo   | Tamanho (caracteres) | Offset (caracteres) |
 |----------------------------|-----------------------------------|--------|----------------------|---------------------|
-| Tipo de registro (TIPREG)  | Fixo `00`                         |  Int   | 2                    | 0                   |
+| Tipo de registro (TIPREG)  | Fixo `99`                         |  Int   | 2                    | 0                   |
 | Nome do arquivo            | Fixo `COTAHIST.AAAA`              | String | 13                   | 2                   |
 | Fonte dos dados            | Fixo `BOVESPA`                    | String | 8                    | 15                  |
 | Data de geração do arquivo | Data no formato `YYYYMMDD`        |  Int   | 8                    | 23                  |
