@@ -36,46 +36,38 @@ var client = http.Client{
 	Jar:       jar,
 }
 
-func GetPage(url string) (*html.Node, error) {
+func GetPage(url string) *html.Node {
 
 	resp, err := client.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("REQUEST error: %v", err)
-	} else if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("STATUS error: %v", resp.StatusCode)
+	Check(err)
+
+	if resp.StatusCode != http.StatusOK {
+		Check(fmt.Errorf("STATUS error: %v", resp.StatusCode))
 	}
 
 	read, err := charset.NewReader(resp.Body, resp.Header.Get("Content-Type"))
-	if err != nil {
-		return nil, fmt.Errorf("READ error: %v", err)
-	}
+	Check(err)
 
 	data, err := html.Parse(read)
-	if err != nil {
-		return nil, fmt.Errorf("PARSE error: %v", err)
-	}
+	Check(err)
 
-	return data, nil
+	return data
 }
 
-func PostPage(urlString string, payload url.Values) (*html.Node, error) {
+func PostPage(urlString string, payload url.Values) *html.Node {
 
 	resp, err := client.PostForm(urlString, payload)
-	if err != nil {
-		return nil, fmt.Errorf("REQUEST error: %v", err)
-	} else if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("STATUS error: %v", resp.StatusCode)
+	Check(err)
+
+	if resp.StatusCode != http.StatusOK {
+		Check(fmt.Errorf("STATUS error: %v", resp.StatusCode))
 	}
 
 	read, err := charset.NewReader(resp.Body, resp.Header.Get("Content-Type"))
-	if err != nil {
-		return nil, fmt.Errorf("READ error: %v", err)
-	}
+	Check(err)
 
 	data, err := html.Parse(read)
-	if err != nil {
-		return nil, fmt.Errorf("PARSE error: %v", err)
-	}
+	Check(err)
 
-	return data, nil
+	return data
 }
