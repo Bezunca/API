@@ -118,7 +118,7 @@ Dessa forma, o exemplo dado acima ficaria:
 | Preço de fechamento (PREULT)                                                                    | `0000000001320`         | R$13,20                         |
 | Preço da melhor oferta de compra (PREOFC)                                                       | `0000000001319`         | R$13,19                         |
 | Preço da melhor oferta de venda (PREOFV)                                                        | `0000000001320`         | R$13,20                         |
-| Total de trades (TOTNEG)                                                                        | `40515`                 | 40.515 lotes negociados         |
+| Total de trades (TOTNEG)                                                                        | `40515`                 | 40.515 trades realizados        |
 | Quantidade total negociada (QUATOT)                                                             | `000000000038730300`    | 38.730.300 unidades negociadas  |
 | Volume total negociado (VOLTOT)                                                                 | `000000050950264600`    | R$509.502.646,00 negociados     |
 | Strike de opções ou quantidade de contratos no mercado futuro (PREEXE)                          | `0000000000000`         | N/A                             |
