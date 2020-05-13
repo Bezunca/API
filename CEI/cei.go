@@ -20,7 +20,7 @@ func getUserTrades(cpf, password string) []base.Trade {
 func getUserPortfolio(cpf, password string) []Asset {
 	trades := base.GetRawUserTrades(cpf, password)
 
-	if trades != nil {
+	if len(trades) > 0 {
 
 		portfolioMap := map[string]*Asset{}
 
@@ -40,7 +40,7 @@ func getUserPortfolio(cpf, password string) []Asset {
 				portfolioMap[trade.Symbol].Amount = portfolioMap[trade.Symbol].Amount.Add(trade.Amount)
 				portfolioMap[trade.Symbol].AveragePrice = portfolioMap[trade.Symbol].AveragePrice.Add(trade.FullPrice)
 			} else {
-				portfolioMap[trade.Symbol].Amount = portfolioMap[trade.Symbol].Amount .Sub(trade.Amount)
+				portfolioMap[trade.Symbol].Amount = portfolioMap[trade.Symbol].Amount.Sub(trade.Amount)
 				portfolioMap[trade.Symbol].AveragePrice = portfolioMap[trade.Symbol].AveragePrice.Sub(trade.FullPrice)
 			}
 		}

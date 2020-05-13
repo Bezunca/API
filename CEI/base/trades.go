@@ -210,12 +210,8 @@ func getAccountTrades(agent, account string, accountPayload url.Values) {
 func GetRawUserTrades(cpf, password string) []Trade {
 	if login(cpf, password) {
 		getAgents()
-		if len(userTrades) > 0 {
-			return userTrades
-		} else {
-			return nil
-		}
+		return userTrades
 	} else {
-		return nil
+		return []Trade{}
 	}
 }
