@@ -100,34 +100,34 @@ antes da vírgula e 2 dígitos após a vírgula (e.g. o número `00123456789.00`
 
 Dessa forma, o exemplo dado acima ficaria:
 
-| Campo                                                                                           | Valor                   |
-|-------------------------------------------------------------------------------------------------|-------------------------|
-| Tipo de registro (TIPREG)                                                                       | `01`                    |
-| Data da coleta                                                                                  | `20190124`              |
-| Código BDI (CODBDI)                                                                             | `02`                    |
-| Ticker (CODNEG)                                                                                 | `ITSA4       `          |
-| Tipo de mercado (TPMERC)                                                                        | `010`                   |
-| Abreviação da empresa (NOMRES)                                                                  | `ITAUSA      `          |
-| Especificação do ativo (ESPECI)                                                                 | `PN      N1`            |
-| Tempo em dias para expiração no mercado futuro (PRAZOT)                                         | *3 caracteres em branco |
-| Moeda de referência (MODREF)                                                                    | `R$  `                  |
-| Preço de abertura (PREABE)                                                                      | `0000000001300`         |
-| Preço máximo (PREMAX)                                                                           | `0000000001335`         |
-| Preço mínimo (PREMIN)                                                                           | `0000000001300`         |
-| Preço médio (PREMED)                                                                            | `0000000001315`         |
-| Preço de fechamento (PREULT)                                                                    | `0000000001320`         |
-| Preço da melhor oferta de compra (PREOFC)                                                       | `0000000001319`         |
-| Preço da melhor oferta de venda (PREOFV)                                                        | `0000000001320`         |
-| Total de trades (TOTNEG)                                                                        | `40515`                 |
-| Quantidade total negociada (QUATOT)                                                             | `000000000038730300`    |
-| Volume total negociado (VOLTOT)                                                                 | `000000050950264600`    |
-| Strike de opções ou quantidade de contratos no mercado futuro (PREEXE)                          | `0000000000000`         |
-| Strike ou quantidade de contratos de opções ou indicador de correção do mercado futuro (INDOPC) | `0`                     |
-| Data de vencimento (DATVEN)                                                                     | `99991231`              |
-| Fator de cotação (FATCOT)                                                                       | `0000001`               |
-| Strike de opções em pontos ou quantidade de contratos em pontos de contratos futuros (PTOEXE)   | `0000000000000`         |
-| Código do ativo no sistema ISIN ou código interno do ativo (CODISI)                             | `BRITSAACNPR7`          |
-| Número de distribuição do ativo (DISMES)                                                        | `389`                   |
+| Campo                                                                                           | Valor                   | Interpretação                   |
+|-------------------------------------------------------------------------------------------------|-------------------------|---------------------------------|
+| Tipo de registro (TIPREG)                                                                       | `01`                    | Cotação diária                  |
+| Data da coleta                                                                                  | `20190124`              | 24/01/2019                      |
+| Código BDI (CODBDI)                                                                             | `02`                    | Lote (100 unidades)             |
+| Ticker (CODNEG)                                                                                 | `ITSA4       `          | ITSA4                           |
+| Tipo de mercado (TPMERC)                                                                        | `010`                   | Espécie/spot (cash)             |
+| Abreviação da empresa (NOMRES)                                                                  | `ITAUSA      `          | Itaúsa                          |
+| Especificação do ativo (ESPECI)                                                                 | `PN      N1`            | Preferencial                    |
+| Tempo em dias para expiração no mercado futuro (PRAZOT)                                         | *3 caracteres em branco | N/A                             |
+| Moeda de referência (MODREF)                                                                    | `R$  `                  | Real brasileiro (BRL)           |
+| Preço de abertura (PREABE)                                                                      | `0000000001300`         | R$13,00                         |
+| Preço máximo (PREMAX)                                                                           | `0000000001335`         | R$13,35                         |
+| Preço mínimo (PREMIN)                                                                           | `0000000001300`         | R$13,00                         |
+| Preço médio (PREMED)                                                                            | `0000000001315`         | R$13,15                         |
+| Preço de fechamento (PREULT)                                                                    | `0000000001320`         | R$13,20                         |
+| Preço da melhor oferta de compra (PREOFC)                                                       | `0000000001319`         | R$13,19                         |
+| Preço da melhor oferta de venda (PREOFV)                                                        | `0000000001320`         | R$13,20                         |
+| Total de trades (TOTNEG)                                                                        | `40515`                 | 40.515 lotes negociados         |
+| Quantidade total negociada (QUATOT)                                                             | `000000000038730300`    | 38.730.300 unidades negociadas  |
+| Volume total negociado (VOLTOT)                                                                 | `000000050950264600`    | R$509.502.646,00 negociados     |
+| Strike de opções ou quantidade de contratos no mercado futuro (PREEXE)                          | `0000000000000`         | N/A                             |
+| Strike ou quantidade de contratos de opções ou indicador de correção do mercado futuro (INDOPC) | `0`                     | N/A                             |
+| Data de vencimento (DATVEN)                                                                     | `99991231`              | N/A                             |
+| Fator de cotação (FATCOT)                                                                       | `0000001`               | 1 unidade de lote com 100 ações |
+| Strike de opções em pontos ou quantidade de contratos em pontos de contratos futuros (PTOEXE)   | `0000000000000`         | N/A                             |
+| Código do ativo no sistema ISIN ou código interno do ativo (CODISI)                             | `BRITSAACNPR7`          | BRITSAACNPR7                    |
+| Número de distribuição do ativo (DISMES)                                                        | `389`                   | 389                             |
 
 
 ### Rodapé
