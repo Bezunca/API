@@ -408,7 +408,7 @@ __Descrição:__ Dado um ativo e a data de um dia, com distância de aproximadam
 
 __URL:__ `https://arquivos.b3.com.br/apinegocios/ticker/:code/:year-:month-:day`
 
-__Parêmetros:__
+__Parâmetros:__
 - `code`: `string`
   > Simbolo do ativo a ser pesquisado
 - `year`: `number`
@@ -1129,7 +1129,32 @@ https://up2dataweb.blob.core.windows.net/raptor/TradeIntraday_SULA3_20200424_1.z
 TODO
 
 ### [Histórico](http://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/)
-TODO
+> As rotas abaixo retornam dados relcaionados ao históricos de preço de ações
+
+<details>
+<summary>Baixar Zip com cotações de todos os ativos relativo a um dado ano</summary>
+<p>
+
+__Descrição:__ Retorna URL para acessar zip contendo histórico de cotações de certo ativos dado um certo dia.
+
+__URL:__ `http://bvmf.bmfbovespa.com.br/InstDados/SerHist/COTAHIST_A:year.ZIP`
+
+__Parêmetros:__
+- `year`: `number`
+  > Ano a ser usado na busca (a partir de 1986).
+
+__Método:__ `GET`
+
+__Tipo de retorno:__ `application/x-zip-compressed`
+
+__Exemplo:__
+```shell
+curl http://bvmf.bmfbovespa.com.br/InstDados/SerHist/COTAHIST_A2020.ZIP
+```
+A resposta será o binário de um Zip.
+
+</p>
+</details>
 
 ### [Consultas](http://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/)
 TODO
