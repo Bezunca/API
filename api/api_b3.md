@@ -1135,7 +1135,7 @@ TODO
 <summary>Baixar Zip com cotações de todos os ativos relativo a um dado ano</summary>
 <p>
 
-__Descrição:__ Retorna URL para acessar zip contendo histórico de cotações de certo ativos dado um certo dia.
+__Descrição:__ Retorna um arquivo Zip contendo um arquivo de texto com dados diários de todos os tickers da bolsa ao longo do ano.
 
 __URL:__ `http://bvmf.bmfbovespa.com.br/InstDados/SerHist/COTAHIST_A:year.ZIP`
 
