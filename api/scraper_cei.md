@@ -87,6 +87,8 @@ __Tipo do Retorno:__ `text/html`
 
 ## Negociação de Ativos
 
+ > *Apenas trades que ocorreram em até um ano e meio atrás poderão ser adquiridos.
+
 <details>
 
 <summary>Página de Negociação de Ativos</summary>
