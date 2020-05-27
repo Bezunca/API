@@ -25,9 +25,16 @@ func StringToDecimal(s string) decimal.Decimal {
 	return sInt
 }
 
+func DateBrToUs(date string) string {
+	dateArr := strings.Split(date, "/")
+	UsDate := dateArr[1] + "/" + dateArr[0] + "/" + dateArr[2]
+	return UsDate
+}
+
 func Check(err error) {
 	if err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
 	}
 }
+

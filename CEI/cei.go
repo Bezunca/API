@@ -1,33 +1,33 @@
 package main
 
 import (
-	"./base"
+	"./scrapper"
 	"github.com/shopspring/decimal"
 )
 
-type Asset struct {
-	Symbol       string
-	Description  string
-	Market       string
-	Amount       decimal.Decimal
-	AveragePrice decimal.Decimal
+func getUserTrades(cpf, password string) []scrapper.Trade {
+	return scrapper.GetUserTrades(cpf, password)
 }
 
-func getUserTrades(cpf, password string) []base.Trade {
-	return base.GetRawUserTrades(cpf, password)
+func getUserDividends(cpf, password string) map[string][]scrapper.Dividend {
+	return scrapper.GetUserDividends(cpf, password)
 }
 
-func getUserPortfolio(cpf, password string) []Asset {
-	trades := base.GetRawUserTrades(cpf, password)
+func getUserPortfolio(cpf, password string) []scrapper.Asset {
+	return scrapper.GetUserPortfolio(cpf, password)
+}
+
+func getUserPortfolioFromTrades(cpf, password string) []scrapper.Asset {
+	trades := scrapper.GetUserTrades(cpf, password)
 
 	if len(trades) > 0 {
 
-		portfolioMap := map[string]*Asset{}
+		portfolioMap := map[string]*scrapper.Asset{}
 
 		for _, trade := range trades {
 
 			if _, ok := portfolioMap[trade.Symbol]; !ok {
-				portfolioMap[trade.Symbol] = &Asset{
+				portfolioMap[trade.Symbol] = &scrapper.Asset{
 					trade.Symbol,
 					trade.Description,
 					trade.Market,
@@ -45,7 +45,7 @@ func getUserPortfolio(cpf, password string) []Asset {
 			}
 		}
 
-		var portfolio []Asset
+		var portfolio []scrapper.Asset
 
 		for _, asset := range portfolioMap {
 			asset.AveragePrice = asset.AveragePrice.DivRound(asset.Amount, 3)
@@ -62,6 +62,14 @@ func main() {
 	/*trades := getUserTrades("CPF", "SENHA")
 	tradesJson, _ := json.Marshal(trades)
 	fmt.Println("\n\n\n", string(tradesJson))*/
+
+	/*portfolio := getUserPortfolioFromTrades("CPF", "SENHA")
+	portfolioJson, _ := json.Marshal(portfolio)
+	fmt.Println("\n\n\n", string(portfolioJson))*/
+
+	/*dividends := getUserDividends("CPF", "SENHA")
+	dividendsJson, _ := json.Marshal(dividends)
+	fmt.Println("\n\n\n", string(dividendsJson))*/
 
 	/*portfolio := getUserPortfolio("CPF", "SENHA")
 	portfolioJson, _ := json.Marshal(portfolio)
