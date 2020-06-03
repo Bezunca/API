@@ -54,35 +54,38 @@ func login(cpf, password string) bool {
 func getAgents(pageUrl string, scrapList []map[string]string) ([]string, []map[string]string) {
 
 	log.Printf("------ getAgents( %s )", pageUrl)
-	log.Printf("\t(Get): %s", CeiBaseUrl + pageUrl)
 
+	log.Printf("\t(Get): %s", CeiBaseUrl+pageUrl)
 	page := utils.GetPage(CeiBaseUrl + pageUrl)
 
+	scrapList = append(scrapList,
+		map[string]string{
+		"html_path":   "//input[@id='__VIEWSTATE']",
+		"html_attr": "value",
+		"form_key": "__VIEWSTATE"},
+		map[string]string{
+			"html_path":   "//input[@id='__VIEWSTATEGENERATOR']",
+			"html_attr": "value",
+			"form_key": "__EVENTVALIDATION"},
+		map[string]string{
+			"html_path":   "//input[@id='__EVENTVALIDATION']",
+			"html_attr": "value",
+			"form_key": "__EVENTVALIDATION"})
+
 	var sessionData []map[string]string
-
-	viewState := htmlquery.FindOne(page, "//input[@id='__VIEWSTATE']")
-	viewStateValue := htmlquery.SelectAttr(viewState, "value")
-	sessionData = append(sessionData, map[string]string{
-		"form_key": "__VIEWSTATE",
-		"form_value": viewStateValue})
-
-	viewStateGenerator := htmlquery.FindOne(page, "//input[@id='__VIEWSTATEGENERATOR']")
-	viewStateGeneratorValue := htmlquery.SelectAttr(viewStateGenerator, "value")
-	sessionData = append(sessionData, map[string]string{
-		"form_key": "__VIEWSTATEGENERATOR",
-		"form_value": viewStateGeneratorValue})
-
-	eventValidation := htmlquery.FindOne(page, "//input[@id='__EVENTVALIDATION']")
-	eventValidationValue := htmlquery.SelectAttr(eventValidation, "value")
-	sessionData = append(sessionData, map[string]string{
-		"form_key": "__EVENTVALIDATION",
-		"form_value": eventValidationValue})
-
 	for _, scrapItem := range scrapList {
+
 		item := htmlquery.FindOne(page, scrapItem["html_path"])
-		itemValue := htmlquery.InnerText(item)
+
+		itemValue := ""
+		if scrapItem["html_attr"] == "inner_text" {
+			itemValue = htmlquery.InnerText(item)
+		} else {
+			itemValue = htmlquery.SelectAttr(item, scrapItem["html_attr"])
+		}
+
 		sessionData = append(sessionData, map[string]string{
-			"form_key": scrapItem["form_key"],
+			"form_key":   scrapItem["form_key"],
 			"form_value": itemValue})
 	}
 
@@ -105,10 +108,10 @@ func getAgentAccounts(pageUrl string, agent string, payloadList, scrapList []map
 	log.Printf("\t(Post): %s", CeiBaseUrl+pageUrl)
 
 	payload := url.Values{
-		"ctl00$ContentPlaceHolder1$ddlAgentes":						   {agent},
+		"ctl00$ContentPlaceHolder1$ddlAgentes":                        {agent},
 		"ctl00$ContentPlaceHolder1$ddlContas":                         {"0"},
 		"__EVENTTARGET":                                               {"ctl00$ContentPlaceHolder1$ddlAgentes"},
-		"ctl00$ContentPlaceHolder1$ToolkitScriptManager1": 			   {"ctl00$ContentPlaceHolder1$updFiltro|ctl00$ContentPlaceHolder1$ddlAgentes"},
+		"ctl00$ContentPlaceHolder1$ToolkitScriptManager1":             {"ctl00$ContentPlaceHolder1$updFiltro|ctl00$ContentPlaceHolder1$ddlAgentes"},
 		"ctl00_ContentPlaceHolder1_ToolkitScriptManager1_HiddenField": {""},
 		"ctl00$ContentPlaceHolder1$hdnPDF_EXCEL":                      {""},
 		"__EVENTARGUMENT":                                             {""},
@@ -120,25 +123,33 @@ func getAgentAccounts(pageUrl string, agent string, payloadList, scrapList []map
 		payload.Set(payloadItem["form_key"], payloadItem["form_value"])
 	}
 
-	page := utils.PostPage(CeiBaseUrl + pageUrl, payload)
+	page := utils.PostPage(CeiBaseUrl+pageUrl, payload)
+
+	scrapList = append(scrapList,
+		map[string]string{
+			"html_path":   "//input[@id='__VIEWSTATE']",
+			"html_attr": "value",
+			"form_key": "__VIEWSTATE"},
+		map[string]string{
+			"html_path":   "//input[@id='__VIEWSTATEGENERATOR']",
+			"html_attr": "value",
+			"form_key": "__EVENTVALIDATION"},
+		map[string]string{
+			"html_path":   "//input[@id='__EVENTVALIDATION']",
+			"html_attr": "value",
+			"form_key": "__EVENTVALIDATION"})
 
 	var sessionData []map[string]string
-
-	viewState := htmlquery.FindOne(page, "//input[@id='__VIEWSTATE']")
-	viewStateValue := htmlquery.SelectAttr(viewState, "value")
-	sessionData = append(sessionData, map[string]string{"form_key": "__VIEWSTATE", "form_value": viewStateValue})
-
-	viewStateGenerator := htmlquery.FindOne(page, "//input[@id='__VIEWSTATEGENERATOR']")
-	viewStateGeneratorValue := htmlquery.SelectAttr(viewStateGenerator, "value")
-	sessionData = append(sessionData, map[string]string{"form_key": "__VIEWSTATEGENERATOR", "form_value": viewStateGeneratorValue})
-
-	eventValidation := htmlquery.FindOne(page, "//input[@id='__EVENTVALIDATION']")
-	eventValidationValue := htmlquery.SelectAttr(eventValidation, "value")
-	sessionData = append(sessionData, map[string]string{"form_key": "__EVENTVALIDATION", "form_value": eventValidationValue})
-
 	for _, scrapItem := range scrapList {
 		item := htmlquery.FindOne(page, scrapItem["html_path"])
-		itemValue := htmlquery.InnerText(item)
+
+		itemValue := ""
+		if scrapItem["html_attr"] == "inner_text" {
+			itemValue = htmlquery.InnerText(item)
+		} else {
+			itemValue = htmlquery.SelectAttr(item, scrapItem["html_attr"])
+		}
+
 		sessionData = append(sessionData, map[string]string{"form_key": scrapItem["form_key"], "form_value": itemValue})
 	}
 

@@ -14,8 +14,8 @@ var portfolioUrl = "ConsultarCarteiraAtivos.aspx"
 
 func getAccountPortfolio(agent, account string, payloadList []map[string]string) {
 
-	log.Printf("------ getAccountDividends( %s , %s )", agent, account)
-	log.Printf("\t(Post): %s", CeiBaseUrl + portfolioUrl)
+	log.Printf("------ getAccountPortfolio( %s , %s )", agent, account)
+	log.Printf("\t(Post): %s", CeiBaseUrl+portfolioUrl)
 
 	payload := url.Values{
 		"ctl00$ContentPlaceHolder1$ddlAgentes":                        {agent},
@@ -34,7 +34,7 @@ func getAccountPortfolio(agent, account string, payloadList []map[string]string)
 		payload.Set(payloadItem["form_key"], payloadItem["form_value"])
 	}
 
-	page := utils.PostPage(CeiBaseUrl + portfolioUrl, payload)
+	page := utils.PostPage(CeiBaseUrl+portfolioUrl, payload)
 
 	portfolioTables := htmlquery.Find(page, "//table[@class='Responsive']")
 	for _, table := range portfolioTables {
@@ -69,14 +69,12 @@ func GetUserPortfolio(cpf, password string) []Asset {
 		scrapList := []map[string]string{
 			{
 				"html_path": "//span[@id='ctl00_ContentPlaceHolder1_lblPeriodoFinal']",
+				"html_attr": "inner_text",
 				"form_key":  "ctl00$ContentPlaceHolder1$txtData",
 			},
 		}
-
-		_, agentPayload := getAgents(portfolioUrl, scrapList)
-
-		getAccountPortfolio("0", "0", agentPayload)
-
+		_, sessionData := getAgents(portfolioUrl, scrapList)
+		getAccountPortfolio("0", "0", sessionData)
 		return userPortfolio
 	} else {
 		return []Asset{}

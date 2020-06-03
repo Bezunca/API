@@ -37,4 +37,3 @@ func Check(err error) {
 		os.Exit(1)
 	}
 }
-

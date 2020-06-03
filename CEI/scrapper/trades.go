@@ -81,10 +81,12 @@ func GetUserTrades(cpf, password string) []Trade {
 				scrapList = []map[string]string{
 					{
 						"html_path": "//span[@id='ctl00_ContentPlaceHolder1_lblPeriodoInicialBolsa']",
+						"html_attr": "inner_text",
 						"form_key":  "ctl00$ContentPlaceHolder1$txtDataDeBolsa",
 					},
 					{
 						"html_path": "//span[@id='ctl00_ContentPlaceHolder1_lblPeriodoFinalBolsa']",
+						"html_attr": "inner_text",
 						"form_key":  "ctl00$ContentPlaceHolder1$txtDataAteBolsa",
 					},
 				}

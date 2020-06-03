@@ -16,7 +16,7 @@ var dividendsUrl = "ConsultarProventos.aspx"
 func getAccountDividends(agent, account string, payloadList []map[string]string) {
 
 	log.Printf("------ getAccountDividends( %s , %s )", agent, account)
-	log.Printf("\t(Post): %s", CeiBaseUrl + dividendsUrl)
+	log.Printf("\t(Post): %s", CeiBaseUrl+dividendsUrl)
 
 	payload := url.Values{
 		"ctl00$ContentPlaceHolder1$ddlAgentes":                        {agent},
@@ -35,7 +35,7 @@ func getAccountDividends(agent, account string, payloadList []map[string]string)
 		payload.Set(payloadItem["form_key"], payloadItem["form_value"])
 	}
 
-	page := utils.PostPage(CeiBaseUrl + dividendsUrl, payload)
+	page := utils.PostPage(CeiBaseUrl+dividendsUrl, payload)
 
 	dividendsTables := htmlquery.Find(page, "//table[@class='responsive']")
 	for _, table := range dividendsTables {
@@ -80,16 +80,17 @@ func GetUserDividends(cpf, password string) map[string][]Dividend {
 		scrapList := []map[string]string{
 			{
 				"html_path": "//span[@id='ctl00_ContentPlaceHolder1_lblPeriodoFinal']",
+				"html_attr": "inner_text",
 				"form_key":  "ctl00$ContentPlaceHolder1$txtData",
 			},
 		}
 
-		_, agentPayload := getAgents(dividendsUrl, scrapList)
+		_, sessionData := getAgents(dividendsUrl, scrapList)
 
-		getAccountDividends("0", "0", agentPayload)
+		getAccountDividends("0", "0", sessionData)
 
 		return map[string][]Dividend{
-			"credited": userCreditedDividends,
+			"credited":    userCreditedDividends,
 			"provisioned": userProvisionedDividends,
 		}
 	} else {
