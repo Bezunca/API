@@ -42,8 +42,12 @@ func FetchQuotation(ctx echo.Context) error {
 	}
 
 	today := time.Now()
-	if today.Hour() < 10 {
-		// B3 only got quotations values after market opening, so before 10AM, we get yesterday values
+	todayWeekday := today.Weekday()
+	if todayWeekday == time.Sunday {
+		today = today.Add(-48 * time.Hour)
+	} else if todayWeekday == time.Saturday || today.Hour() < 6 {
+		// B3 only got quotations values after market opening, so before 6AM, we get yesterday values
+		// If it's after 6AM, we zero the quotations values, waiting for market opening
 		today = today.Add(-24 * time.Hour)
 	}
 	date := today.Format("2006-01-02")
@@ -99,13 +103,13 @@ func getCurrentPrice(date string, ticker string, quotations chan<- fetchedQuotat
 		return
 	}
 
-	if len(b3Response.Values) == 0 {
-		errChan <- fmt.Errorf("failed to get B3 quotation values field for %v on %v", ticker, date)
-		return
+	price := 0.0
+	if len(b3Response.Values) != 0 {
+		price = b3Response.Values[0][2].(float64)
 	}
 
 	quotations <- fetchedQuotation{
-		Ticker: b3Response.Values[0][0].(string),
-		Price:  b3Response.Values[0][2].(float64),
+		Ticker: b3Response.Name,
+		Price:  price,
 	}
 }
