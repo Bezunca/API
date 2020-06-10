@@ -138,7 +138,7 @@ func parseContentLine(raw_line string) SecurityQuote {
 	}
 }
 
-func parseHistoricData(rawData []string) (Header, []SecurityQuote) {
+func ParseHistoricData(rawData []string) (Header, []SecurityQuote) {
 	header := parseHeader(rawData[0])
 	contentList := make([]SecurityQuote, len(rawData)-3)
 	for i, raw_line := range rawData[1:len(rawData)-2] {
@@ -147,11 +147,15 @@ func parseHistoricData(rawData []string) (Header, []SecurityQuote) {
 	return header, contentList
 }
 
+func ParseHistoricDataFromBytes(data []byte) (Header, []SecurityQuote){
+	segmentedLines := strings.Split(string(data), "\n")
+	return ParseHistoricData(segmentedLines)
+}
+
 func main() {
 	rawData, err := ioutil.ReadFile("../COTAHIST_A2019.TXT")
 	check(err)
-	segmentedLines := strings.Split(string(rawData), "\n")
-	header, contents := parseHistoricData(segmentedLines)
+	header, contents := ParseHistoricDataFromBytes(rawData)
 	fmt.Println(header)
 	fmt.Println("------")
 	fmt.Println(contents)
