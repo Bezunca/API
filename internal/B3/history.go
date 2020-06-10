@@ -55,9 +55,3 @@ func downloadZip(year uint) (Header, []SecurityQuote){
 	encodedContent, err := extractZipInMemory(responseData)
 	return ParseHistoricDataFromBytes(encodedContent)
 }
-
-func main() {
-	fmt.Println("Starting...")
-	downloadZip(2020)
-	fmt.Println("Finishing")
-}
