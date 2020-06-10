@@ -58,12 +58,11 @@ func downloadZip(year uint) {
 	}
 
 	encoded_content, err := extractZipInMemory(responseData)
-	fmt.Println(encoded_content)
-	//header, content := ParseHistoricDataFromBytes(encoded_content)
-	//fmt.Println(header)
-	//fmt.Println("------")
-	//fmt.Println(content)
-	//fmt.Println("------")
+	header, content := ParseHistoricDataFromBytes(encoded_content)
+	fmt.Println(header)
+	fmt.Println("------")
+	fmt.Println(content)
+	fmt.Println("------")
 }
 
 func main() {
