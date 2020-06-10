@@ -1,23 +1,23 @@
 package scrapper
 
 import (
-	"../utils"
-	"github.com/antchfx/htmlquery"
+	"bezuncapi/internal/utils"
 	"log"
 	"net/url"
+
+	"github.com/antchfx/htmlquery"
 )
 
-var CeiBaseUrl = "https://cei.b3.com.br/CEI_Responsivo/"
+const ceiBaseUrl = "https://cei.b3.com.br/CEI_Responsivo/"
 
 func login(cpf, password string) bool {
 
 	log.Printf("------ login( %s , %s )", cpf, password)
-	log.Printf("\t(Get): %s", CeiBaseUrl)
+	log.Printf("\t(Get): %s", ceiBaseUrl)
 
-	loginPage := utils.GetPage(CeiBaseUrl)
+	loginPage := utils.GetPage(ceiBaseUrl)
 
-	viewState := htmlquery.FindOne(loginPage, "//input[@id='__VIEWSTATE']")
-	viewStateValue := htmlquery.SelectAttr(viewState, "value")
+	viewStateValue := htmlquery.SelectAttr(htmlquery.FindOne(loginPage, "//input[@id='__VIEWSTATE']"), "value")
 
 	viewStateGenerator := htmlquery.FindOne(loginPage, "//input[@id='__VIEWSTATEGENERATOR']")
 	viewStateGeneratorValue := htmlquery.SelectAttr(viewStateGenerator, "value")
@@ -38,8 +38,8 @@ func login(cpf, password string) bool {
 		"__ASYNCPOST":                        {"false"},
 	}
 
-	log.Printf("\t(Post): %s", CeiBaseUrl)
-	homePage := utils.PostPage(CeiBaseUrl, loginPayload)
+	log.Printf("\t(Post): %s", ceiBaseUrl)
+	homePage := utils.PostPage(ceiBaseUrl, loginPayload)
 
 	homeTitle := htmlquery.FindOne(homePage, "//a[@href='home.aspx']")
 	if homeTitle != nil {
@@ -55,22 +55,22 @@ func getAgents(pageUrl string, scrapList []map[string]string) ([]string, []map[s
 
 	log.Printf("------ getAgents( %s )", pageUrl)
 
-	log.Printf("\t(Get): %s", CeiBaseUrl+pageUrl)
-	page := utils.GetPage(CeiBaseUrl + pageUrl)
+	log.Printf("\t(Get): %s", ceiBaseUrl+pageUrl)
+	page := utils.GetPage(ceiBaseUrl + pageUrl)
 
 	scrapList = append(scrapList,
 		map[string]string{
-		"html_path":   "//input[@id='__VIEWSTATE']",
-		"html_attr": "value",
-		"form_key": "__VIEWSTATE"},
-		map[string]string{
-			"html_path":   "//input[@id='__VIEWSTATEGENERATOR']",
+			"html_path": "//input[@id='__VIEWSTATE']",
 			"html_attr": "value",
-			"form_key": "__EVENTVALIDATION"},
+			"form_key":  "__VIEWSTATE"},
 		map[string]string{
-			"html_path":   "//input[@id='__EVENTVALIDATION']",
+			"html_path": "//input[@id='__VIEWSTATEGENERATOR']",
 			"html_attr": "value",
-			"form_key": "__EVENTVALIDATION"})
+			"form_key":  "__EVENTVALIDATION"},
+		map[string]string{
+			"html_path": "//input[@id='__EVENTVALIDATION']",
+			"html_attr": "value",
+			"form_key":  "__EVENTVALIDATION"})
 
 	var sessionData []map[string]string
 	for _, scrapItem := range scrapList {
@@ -105,7 +105,7 @@ func getAgents(pageUrl string, scrapList []map[string]string) ([]string, []map[s
 func getAgentAccounts(pageUrl string, agent string, payloadList, scrapList []map[string]string) ([]string, []map[string]string) {
 
 	log.Printf("------ getAgentAccounts( %s )", agent)
-	log.Printf("\t(Post): %s", CeiBaseUrl+pageUrl)
+	log.Printf("\t(Post): %s", ceiBaseUrl+pageUrl)
 
 	payload := url.Values{
 		"ctl00$ContentPlaceHolder1$ddlAgentes":                        {agent},
@@ -123,21 +123,21 @@ func getAgentAccounts(pageUrl string, agent string, payloadList, scrapList []map
 		payload.Set(payloadItem["form_key"], payloadItem["form_value"])
 	}
 
-	page := utils.PostPage(CeiBaseUrl+pageUrl, payload)
+	page := utils.PostPage(ceiBaseUrl+pageUrl, payload)
 
 	scrapList = append(scrapList,
 		map[string]string{
-			"html_path":   "//input[@id='__VIEWSTATE']",
+			"html_path": "//input[@id='__VIEWSTATE']",
 			"html_attr": "value",
-			"form_key": "__VIEWSTATE"},
+			"form_key":  "__VIEWSTATE"},
 		map[string]string{
-			"html_path":   "//input[@id='__VIEWSTATEGENERATOR']",
+			"html_path": "//input[@id='__VIEWSTATEGENERATOR']",
 			"html_attr": "value",
-			"form_key": "__EVENTVALIDATION"},
+			"form_key":  "__EVENTVALIDATION"},
 		map[string]string{
-			"html_path":   "//input[@id='__EVENTVALIDATION']",
+			"html_path": "//input[@id='__EVENTVALIDATION']",
 			"html_attr": "value",
-			"form_key": "__EVENTVALIDATION"})
+			"form_key":  "__EVENTVALIDATION"})
 
 	var sessionData []map[string]string
 	for _, scrapItem := range scrapList {

@@ -1,20 +1,19 @@
 package scrapper
 
 import (
-	"../utils"
-	"github.com/antchfx/htmlquery"
+	"bezuncapi/internal/utils"
 	"log"
 	"net/url"
+
+	"github.com/antchfx/htmlquery"
 )
 
-var userTrades []Trade
+const tradesUrl = "negociacao-de-ativos.aspx"
 
-var tradesUrl = "negociacao-de-ativos.aspx"
-
-func getAccountTrades(agent, account string, payloadList []map[string]string) {
+func getAccountTrades(agent, account string, payloadList []map[string]string, userTrades *[]Trade) {
 
 	log.Printf("------ getAccountTrades( %s , %s )", agent, account)
-	log.Printf("\t(Post): %s", CeiBaseUrl+tradesUrl)
+	log.Printf("\t(Post): %s", ceiBaseUrl+tradesUrl)
 
 	payload := url.Values{
 		"ctl00$ContentPlaceHolder1$ddlAgentes":                        {agent},
@@ -33,7 +32,7 @@ func getAccountTrades(agent, account string, payloadList []map[string]string) {
 		payload.Set(payloadItem["form_key"], payloadItem["form_value"])
 	}
 
-	page := utils.PostPage(CeiBaseUrl+tradesUrl, payload)
+	page := utils.PostPage(ceiBaseUrl+tradesUrl, payload)
 
 	tradesTable := htmlquery.FindOne(page, "//table[@class='responsive']")
 	if tradesTable != nil {
@@ -58,7 +57,7 @@ func getAccountTrades(agent, account string, payloadList []map[string]string) {
 				utils.StringToDecimal(utils.CleanString(htmlquery.InnerText(tInfos[9]))),
 			}
 
-			userTrades = append(userTrades, parsedTrade)
+			*userTrades = append(*userTrades, parsedTrade)
 		}
 
 		log.Printf("\tAgent %s, Account %s:  %d Transactions Found", agent, account, len(trades))
@@ -68,6 +67,8 @@ func getAccountTrades(agent, account string, payloadList []map[string]string) {
 }
 
 func GetUserTrades(cpf, password string) []Trade {
+
+	var userTrades []Trade
 
 	if login(cpf, password) {
 
@@ -95,15 +96,15 @@ func GetUserTrades(cpf, password string) []Trade {
 
 				for _, account := range accounts {
 					if account != "-1" {
-						getAccountTrades(agent, account, accountPayload)
+						getAccountTrades(agent, account, accountPayload, &userTrades)
 					}
 				}
 			}
 		}
+	}
 
-		return userTrades
-
-	} else {
+	if userTrades == nil {
 		return []Trade{}
 	}
+	return userTrades
 }

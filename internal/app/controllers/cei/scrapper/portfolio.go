@@ -1,11 +1,12 @@
 package scrapper
 
 import (
-	"../utils"
-	"github.com/antchfx/htmlquery"
-	"github.com/shopspring/decimal"
+	"bezuncapi/internal/utils"
 	"log"
 	"net/url"
+
+	"github.com/antchfx/htmlquery"
+	"github.com/shopspring/decimal"
 )
 
 var userPortfolio []Asset
@@ -15,7 +16,7 @@ var portfolioUrl = "ConsultarCarteiraAtivos.aspx"
 func getAccountPortfolio(agent, account string, payloadList []map[string]string) {
 
 	log.Printf("------ getAccountPortfolio( %s , %s )", agent, account)
-	log.Printf("\t(Post): %s", CeiBaseUrl+portfolioUrl)
+	log.Printf("\t(Post): %s", ceiBaseUrl+portfolioUrl)
 
 	payload := url.Values{
 		"ctl00$ContentPlaceHolder1$ddlAgentes":                        {agent},
@@ -34,7 +35,7 @@ func getAccountPortfolio(agent, account string, payloadList []map[string]string)
 		payload.Set(payloadItem["form_key"], payloadItem["form_value"])
 	}
 
-	page := utils.PostPage(CeiBaseUrl+portfolioUrl, payload)
+	page := utils.PostPage(ceiBaseUrl+portfolioUrl, payload)
 
 	portfolioTables := htmlquery.Find(page, "//table[@class='Responsive']")
 	for _, table := range portfolioTables {

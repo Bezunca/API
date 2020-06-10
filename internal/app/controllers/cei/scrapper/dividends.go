@@ -1,11 +1,12 @@
 package scrapper
 
 import (
-	"../utils"
-	"github.com/antchfx/htmlquery"
+	"bezuncapi/internal/utils"
 	"log"
 	"net/url"
 	"time"
+
+	"github.com/antchfx/htmlquery"
 )
 
 var userCreditedDividends []Dividend
@@ -16,7 +17,7 @@ var dividendsUrl = "ConsultarProventos.aspx"
 func getAccountDividends(agent, account string, payloadList []map[string]string) {
 
 	log.Printf("------ getAccountDividends( %s , %s )", agent, account)
-	log.Printf("\t(Post): %s", CeiBaseUrl+dividendsUrl)
+	log.Printf("\t(Post): %s", ceiBaseUrl+dividendsUrl)
 
 	payload := url.Values{
 		"ctl00$ContentPlaceHolder1$ddlAgentes":                        {agent},
@@ -35,7 +36,7 @@ func getAccountDividends(agent, account string, payloadList []map[string]string)
 		payload.Set(payloadItem["form_key"], payloadItem["form_value"])
 	}
 
-	page := utils.PostPage(CeiBaseUrl+dividendsUrl, payload)
+	page := utils.PostPage(ceiBaseUrl+dividendsUrl, payload)
 
 	dividendsTables := htmlquery.Find(page, "//table[@class='responsive']")
 	for _, table := range dividendsTables {
