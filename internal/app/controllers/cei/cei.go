@@ -1,7 +1,7 @@
 package cei
 
 import (
-	"bezuncapi/internal/app/controllers/cei/scrapper"
+	"bezuncapi/internal/app/controllers/cei/scraper"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -22,7 +22,7 @@ func UserTrades(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, scrapper.GetUserTrades(userCPF, ceiPassword))
+	return ctx.JSON(http.StatusOK, scraper.GetUserTrades(userCPF, ceiPassword))
 }
 
 func UserPortfolioFromTrades(ctx echo.Context) error {
@@ -31,7 +31,7 @@ func UserPortfolioFromTrades(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, scrapper.GetUserPortfolioFromTrades(userCPF, ceiPassword))
+	return ctx.JSON(http.StatusOK, scraper.GetUserPortfolioFromTrades(userCPF, ceiPassword))
 }
 
 func UserDividends(ctx echo.Context) error {
@@ -40,7 +40,7 @@ func UserDividends(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, scrapper.GetUserDividends(userCPF, ceiPassword))
+	return ctx.JSON(http.StatusOK, scraper.GetUserDividends(userCPF, ceiPassword))
 }
 
 func UserPortfolio(ctx echo.Context) error {
@@ -49,5 +49,5 @@ func UserPortfolio(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, scrapper.GetUserPortfolio(userCPF, ceiPassword))
+	return ctx.JSON(http.StatusOK, scraper.GetUserPortfolio(userCPF, ceiPassword))
 }

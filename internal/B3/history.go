@@ -1,4 +1,4 @@
-package main
+package history_parser
 
 import (
 	"archive/zip"

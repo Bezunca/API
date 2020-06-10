@@ -1,8 +1,7 @@
-package main
+package history_parser
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -150,14 +149,4 @@ func ParseHistoricData(rawData []string) (Header, []SecurityQuote) {
 func ParseHistoricDataFromBytes(data []byte) (Header, []SecurityQuote){
 	segmentedLines := strings.Split(string(data), "\n")
 	return ParseHistoricData(segmentedLines)
-}
-
-func main() {
-	rawData, err := ioutil.ReadFile("../COTAHIST_A2019.TXT")
-	check(err)
-	header, contents := ParseHistoricDataFromBytes(rawData)
-	fmt.Println(header)
-	fmt.Println("------")
-	fmt.Println(contents)
-	fmt.Println("------")
 }

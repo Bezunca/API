@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type b3QuotationColumns struct {
+type b3PriceColumns struct {
 	Name            string `json:"name"`
 	FriendlyName    string `json:"friendlyName"`
 	FriendlyNamePt  string `json:"friendlyNamePt"`
@@ -20,22 +20,22 @@ type b3QuotationColumns struct {
 	ValueAlignment  int    `json:"valueAlignment"`
 }
 
-type b3QuotationResponse struct {
-	Name         string               `json:"name"`
-	FriendlyName string               `json:"friendlyName"`
-	Columns      []b3QuotationColumns `json:"columns"`
-	Values       [][6]interface{}     `json:"values"`
+type b3PriceResponse struct {
+	Name         string           `json:"name"`
+	FriendlyName string           `json:"friendlyName"`
+	Columns      []b3PriceColumns `json:"columns"`
+	Values       [][6]interface{} `json:"values"`
 	// Inner slices follows columns order
 }
 
-type fetchedQuotation struct {
+type Security struct {
 	Ticker string
 	Price  float64
 }
 
-// FetchQuotation gets the price of a given tickers through B3's public API
+// FetchLatestPrice gets the latest prices of securities through B3's public API
 // Prices are 15 minutes in the past
-func FetchQuotation(ctx echo.Context) error {
+func FetchLatestPrice(ctx echo.Context) error {
 	tickers, ok := ctx.QueryParams()["tickers"]
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Missing tickers query parameter")
@@ -46,29 +46,29 @@ func FetchQuotation(ctx echo.Context) error {
 	if todayWeekday == time.Sunday {
 		today = today.Add(-48 * time.Hour)
 	} else if todayWeekday == time.Saturday || today.Hour() < 6 {
-		// B3 only got quotations values after market opening, so before 6AM, we get yesterday values
-		// If it's after 6AM, we zero the quotations values, waiting for market opening
+		// B3 only provides price values after market opening, so before 6AM, we get yesterday values
+		// If it's after 6AM, we zero the prices, waiting for the market to open
 		today = today.Add(-24 * time.Hour)
 	}
 	date := today.Format("2006-01-02")
 
-	fetchedQuotationsChan := make(chan fetchedQuotation, len(tickers))
+	fetchedPricesChan := make(chan Security, len(tickers))
 	errChan := make(chan error)
 	defer func() {
-		close(fetchedQuotationsChan)
+		close(fetchedPricesChan)
 		close(errChan)
 	}()
 
 	for _, ticker := range tickers {
-		go getCurrentPrice(date, ticker, fetchedQuotationsChan, errChan)
+		go getCurrentPrice(date, ticker, fetchedPricesChan, errChan)
 	}
 
-	var fetchedQuotations []fetchedQuotation
+	var fetchedPrices []Security
 	var errors []error
 	for i := 0; i < len(tickers); i++ {
 		select {
-		case fetchedQuotation := <-fetchedQuotationsChan:
-			fetchedQuotations = append(fetchedQuotations, fetchedQuotation)
+		case fetchedPrice := <-fetchedPricesChan:
+			fetchedPrices = append(fetchedPrices, fetchedPrice)
 		case err := <-errChan:
 			ctx.Logger().Error(err)
 			errors = append(errors, err)
@@ -79,10 +79,10 @@ func FetchQuotation(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusServiceUnavailable, "One or more tickers couldn't be fetched from B3, try again later")
 	}
 
-	return ctx.JSON(http.StatusOK, fetchedQuotations)
+	return ctx.JSON(http.StatusOK, fetchedPrices)
 }
 
-func getCurrentPrice(date string, ticker string, quotations chan<- fetchedQuotation, errChan chan<- error) {
+func getCurrentPrice(date string, ticker string, pricesChannel chan<- Security, errChan chan<- error) {
 	url := fmt.Sprintf("https://arquivos.b3.com.br/apinegocios/ticker/%v/%v", ticker, date)
 	response, err := http.Get(url)
 	if err != nil {
@@ -95,7 +95,7 @@ func getCurrentPrice(date string, ticker string, quotations chan<- fetchedQuotat
 		}
 	}()
 
-	b3Response := new(b3QuotationResponse)
+	b3Response := new(b3PriceResponse)
 	decoder := json.NewDecoder(response.Body)
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(b3Response); err != nil {
@@ -108,7 +108,7 @@ func getCurrentPrice(date string, ticker string, quotations chan<- fetchedQuotat
 		price = b3Response.Values[0][2].(float64)
 	}
 
-	quotations <- fetchedQuotation{
+	pricesChannel <- Security{
 		Ticker: b3Response.Name,
 		Price:  price,
 	}
