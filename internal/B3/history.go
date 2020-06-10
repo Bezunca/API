@@ -2,16 +2,37 @@ package main
 
 import (
 	"archive/zip"
+	"bytes"
+	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 )
 
-func openZipFromBytes(data []byte) {
-	dataReader := io.ReaderAt(data, 0)
+func extractZipInMemory(data []byte) ([]byte, error){
+	readerAt := bytes.NewReader(data)
+	r, err := zip.NewReader(readerAt, int64(len(data)))
+	if err != nil {
+		return nil, err
+	}
+	for _, f := range r.File {
+		fmt.Printf("Contents of %s:\n", f.Name)
+		rc, err := f.Open()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		extractedData, err := ioutil.ReadAll(rc)
+		if err != nil {
+			fmt.Print(err.Error())
+			os.Exit(1)
+		}
+		rc.Close()
+		return extractedData, nil
+	}
+	return nil, errors.New("no file found inside zip")
 }
 
 func downloadZip(year uint) {
@@ -19,7 +40,7 @@ func downloadZip(year uint) {
 	// Prices are 15 minutes in the past
 
 	//url := fmt.Sprintf("http://bvmf.bmfbovespa.com.br/InstDados/SerHist/COTAHIST_A%v.ZIP", year)
-	url := fmt.Sprintf("http://localhost:8000/COTAHIST_A2020.ZIP")
+	url := fmt.Sprintf("http://localhost:8000/COTAHIST_A2019.ZIP")
 	response, err := http.Get(url)
 
 	fmt.Println(response.Status)
@@ -36,28 +57,13 @@ func downloadZip(year uint) {
 		os.Exit(1)
 	}
 
-	//defer response.Body.Close()
-
-	// Iterate through the files in the archive,
-	// printing some of their contents.
-	zipFromBytes := openZipFromBytes()
-
-	for _, f := range response.Body.File {
-		fmt.Printf("Contents of %s:\n", f.Name)
-		rc, err := f.Open()
-		if err != nil {
-			log.Fatal(err)
-		}
-		_, err = io.CopyN(os.Stdout, rc, 68)
-		if err != nil {
-			log.Fatal(err)
-		}
-		rc.Close()
-		fmt.Println()
-	}
-
-	fmt.Println("---------")
-	fmt.Println()
+	encoded_content, err := extractZipInMemory(responseData)
+	fmt.Println(encoded_content)
+	//header, content := ParseHistoricDataFromBytes(encoded_content)
+	//fmt.Println(header)
+	//fmt.Println("------")
+	//fmt.Println(content)
+	//fmt.Println("------")
 }
 
 func main() {
