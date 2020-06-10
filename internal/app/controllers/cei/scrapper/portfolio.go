@@ -9,11 +9,9 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-var userPortfolio []Asset
+const portfolioUrl = "ConsultarCarteiraAtivos.aspx"
 
-var portfolioUrl = "ConsultarCarteiraAtivos.aspx"
-
-func getAccountPortfolio(agent, account string, payloadList []map[string]string) {
+func getAccountPortfolio(agent, account string, payloadList []map[string]string) []Asset{
 
 	log.Printf("------ getAccountPortfolio( %s , %s )", agent, account)
 	log.Printf("\t(Post): %s", ceiBaseUrl+portfolioUrl)
@@ -36,6 +34,8 @@ func getAccountPortfolio(agent, account string, payloadList []map[string]string)
 	}
 
 	page := utils.PostPage(ceiBaseUrl+portfolioUrl, payload)
+
+	var userPortfolio []Asset
 
 	portfolioTables := htmlquery.Find(page, "//table[@class='Responsive']")
 	for _, table := range portfolioTables {
@@ -63,20 +63,25 @@ func getAccountPortfolio(agent, account string, payloadList []map[string]string)
 			}
 		}
 	}
+
+	return userPortfolio
 }
 
 func GetUserPortfolio(cpf, password string) []Asset {
 	if login(cpf, password) {
-		scrapList := []map[string]string{
+		var scrapList []map[string]string
+		agents, agentPayload := getAgents(portfolioUrl, scrapList)
+
+		scrapList = []map[string]string{
 			{
 				"html_path": "//span[@id='ctl00_ContentPlaceHolder1_lblPeriodoFinal']",
 				"html_attr": "inner_text",
 				"form_key":  "ctl00$ContentPlaceHolder1$txtData",
 			},
 		}
-		_, sessionData := getAgents(portfolioUrl, scrapList)
-		getAccountPortfolio("0", "0", sessionData)
-		return userPortfolio
+		accounts, accountPayload := getAgentAccounts(portfolioUrl, agents[0], agentPayload, scrapList)
+
+		return getAccountPortfolio(agents[0], accounts[0], accountPayload)
 	} else {
 		return []Asset{}
 	}

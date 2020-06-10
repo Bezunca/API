@@ -73,7 +73,6 @@ func GetUserTrades(cpf, password string) []Trade {
 	if login(cpf, password) {
 
 		var scrapList []map[string]string
-
 		agents, agentPayload := getAgents(tradesUrl, scrapList)
 
 		for _, agent := range agents {
@@ -91,14 +90,9 @@ func GetUserTrades(cpf, password string) []Trade {
 						"form_key":  "ctl00$ContentPlaceHolder1$txtDataAteBolsa",
 					},
 				}
-
 				accounts, accountPayload := getAgentAccounts(tradesUrl, agent, agentPayload, scrapList)
 
-				for _, account := range accounts {
-					if account != "-1" {
-						getAccountTrades(agent, account, accountPayload, &userTrades)
-					}
-				}
+				getAccountTrades(agent, accounts[0], accountPayload, &userTrades)
 			}
 		}
 	}
