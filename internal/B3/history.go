@@ -35,17 +35,12 @@ func extractZipInMemory(data []byte) ([]byte, error){
 	return nil, errors.New("no file found inside zip")
 }
 
-func downloadZip(year uint) {
+func downloadZip(year uint) (Header, []SecurityQuote){
 	// Gets the price of a given ticker through B3's public API
 	// Prices are 15 minutes in the past
 
-	//url := fmt.Sprintf("http://bvmf.bmfbovespa.com.br/InstDados/SerHist/COTAHIST_A%v.ZIP", year)
-	url := fmt.Sprintf("http://localhost:8000/COTAHIST_A2019.ZIP")
+	url := fmt.Sprintf("http://bvmf.bmfbovespa.com.br/InstDados/SerHist/COTAHIST_A%v.ZIP", year)
 	response, err := http.Get(url)
-
-	fmt.Println(response.Status)
-	fmt.Println("--------")
-	fmt.Println(response.Header)
 	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
@@ -57,12 +52,8 @@ func downloadZip(year uint) {
 		os.Exit(1)
 	}
 
-	encoded_content, err := extractZipInMemory(responseData)
-	header, content := ParseHistoricDataFromBytes(encoded_content)
-	fmt.Println(header)
-	fmt.Println("------")
-	fmt.Println(content)
-	fmt.Println("------")
+	encodedContent, err := extractZipInMemory(responseData)
+	return ParseHistoricDataFromBytes(encodedContent)
 }
 
 func main() {
