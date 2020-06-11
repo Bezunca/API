@@ -33,9 +33,9 @@ type Security struct {
 	Price  float64
 }
 
-// FetchLatestPrice gets the latest prices of securities through B3's public API
+// FetchLatestPrices gets the latest prices of securities through B3's public API
 // Prices are 15 minutes in the past
-func FetchLatestPrice(ctx echo.Context) error {
+func FetchLatestPrices(ctx echo.Context) error {
 	tickers, ok := ctx.QueryParams()["tickers"]
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Missing tickers query parameter")

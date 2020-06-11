@@ -13,7 +13,7 @@ func Routes(router *echo.Router) {
 	router.Add(http.MethodGet, "/", hello)
 
 	// B3 stuff
-	router.Add(http.MethodGet, "/fetch_quotation", b3.FetchLatestPrice)
+	router.Add(http.MethodGet, "/fetch_latest_prices", b3.FetchLatestPrices)
 
 	// CEI stuff
 	router.Add(http.MethodGet, "/user_trades", cei.UserTrades)
