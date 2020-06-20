@@ -1,21 +1,24 @@
 package user
 
 import (
+	"bezuncapi/internal/config"
+	"bezuncapi/internal/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"os"
 )
 
-func createToken(user User) (string, error) {
+func createToken(user models.User) (string, error) {
+
+	configs := config.Get()
 
 	atClaims := jwt.MapClaims{}
-	atClaims["user_id"] = user.Id
+	atClaims["user_email"] = user.LoginCredentials.Email
 
 	//TODO: Token expiration
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	token, err := at.SignedString([]byte(os.Getenv("3K2jwcqZEQP5hnogXu0j")))
+	token, err := at.SignedString([]byte(configs.JWTSecret))
 
 	return token, err
 }
@@ -27,12 +30,14 @@ func Login(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
 	}
 
-	//TODO: Check user (MongoDB)
-	user := User{
-		Id: 999,
-		Email: userEmail,
-		Password: userPassword,
+	user, err := GetUserByLoginCredentials(ctx, models.LoginCredentials{
+		Email:    userEmail,
+		Password: userPassword},
+	)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
+
 	token, err := createToken(user)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
@@ -41,6 +46,6 @@ func Login(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, map[string]string{"token": token})
 }
 
-func Info(ctx echo.Context, user User) error {
-	return ctx.JSON(http.StatusOK, map[string]int{"id": user.Id})
+func Info(ctx echo.Context, user models.User) error {
+	return ctx.JSON(http.StatusOK, user)
 }

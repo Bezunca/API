@@ -1,16 +1,16 @@
 package scraper
 
 import (
+	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
+	"github.com/antchfx/htmlquery"
 	"log"
 	"net/url"
-
-	"github.com/antchfx/htmlquery"
 )
 
 const tradesUrl = "negociacao-de-ativos.aspx"
 
-func getAccountTrades(agent, account string, payloadList []map[string]string, userTrades *[]Trade) {
+func getAccountTrades(agent, account string, payloadList []map[string]string, userTrades *[]models.Trade) {
 
 	log.Printf("------ getAccountTrades( %s , %s )", agent, account)
 	log.Printf("\t(Post): %s", ceiBaseUrl+tradesUrl)
@@ -44,7 +44,7 @@ func getAccountTrades(agent, account string, payloadList []map[string]string, us
 
 			tInfos := htmlquery.Find(trade, "//td")
 
-			parsedTrade := Trade{
+			parsedTrade := models.Trade{
 				utils.CleanString(htmlquery.InnerText(tInfos[0])),
 				utils.CleanString(htmlquery.InnerText(tInfos[1])),
 				utils.CleanString(htmlquery.InnerText(tInfos[2])),
@@ -66,9 +66,9 @@ func getAccountTrades(agent, account string, payloadList []map[string]string, us
 	}
 }
 
-func GetUserTrades(cpf, password string) []Trade {
+func GetUserTrades(cpf, password string) []models.Trade {
 
-	var userTrades []Trade
+	var userTrades []models.Trade
 
 	if login(cpf, password) {
 
@@ -98,7 +98,7 @@ func GetUserTrades(cpf, password string) []Trade {
 	}
 
 	if userTrades == nil {
-		return []Trade{}
+		return []models.Trade{}
 	}
 	return userTrades
 }

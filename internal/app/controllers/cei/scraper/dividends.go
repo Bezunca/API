@@ -1,17 +1,17 @@
 package scraper
 
 import (
+	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
+	"github.com/antchfx/htmlquery"
 	"log"
 	"net/url"
 	"time"
-
-	"github.com/antchfx/htmlquery"
 )
 
 const dividendsUrl = "ConsultarProventos.aspx"
 
-func getAccountDividends(agent, account string, payloadList []map[string]string) map[string][]Dividend {
+func getAccountDividends(agent, account string, payloadList []map[string]string) map[string][]models.Dividend {
 
 	log.Printf("------ getAccountDividends( %s , %s )", agent, account)
 	log.Printf("\t(Post): %s", ceiBaseUrl+dividendsUrl)
@@ -35,8 +35,8 @@ func getAccountDividends(agent, account string, payloadList []map[string]string)
 
 	page := utils.PostPage(ceiBaseUrl+dividendsUrl, payload)
 
-	var userCreditedDividends []Dividend
-	var userProvisionedDividends []Dividend
+	var userCreditedDividends []models.Dividend
+	var userProvisionedDividends []models.Dividend
 
 	dividendsTables := htmlquery.Find(page, "//table[@class='responsive']")
 	for _, table := range dividendsTables {
@@ -50,7 +50,7 @@ func getAccountDividends(agent, account string, payloadList []map[string]string)
 
 				dInfos := htmlquery.Find(dividend, "//td")
 
-				parsedDividend := Dividend{
+				parsedDividend := models.Dividend{
 					utils.CleanString(htmlquery.InnerText(dInfos[0])) + " " + utils.CleanString(htmlquery.InnerText(dInfos[1])),
 					utils.CleanString(htmlquery.InnerText(dInfos[2])),
 					utils.CleanString(htmlquery.InnerText(dInfos[3])),
@@ -74,13 +74,13 @@ func getAccountDividends(agent, account string, payloadList []map[string]string)
 		}
 	}
 
-	return map[string][]Dividend{
+	return map[string][]models.Dividend{
 		"credited":    userCreditedDividends,
 		"provisioned": userProvisionedDividends,
 	}
 }
 
-func GetUserDividends(cpf, password string) map[string][]Dividend {
+func GetUserDividends(cpf, password string) map[string][]models.Dividend {
 	if login(cpf, password) {
 
 		var scrapList []map[string]string
@@ -97,6 +97,6 @@ func GetUserDividends(cpf, password string) map[string][]Dividend {
 
 		return getAccountDividends(agents[0], accounts[0], accountPayload)
 	} else {
-		return map[string][]Dividend{}
+		return map[string][]models.Dividend{}
 	}
 }

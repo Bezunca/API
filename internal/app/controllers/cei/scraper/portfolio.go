@@ -1,17 +1,17 @@
 package scraper
 
 import (
+	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
-	"log"
-	"net/url"
-
 	"github.com/antchfx/htmlquery"
 	"github.com/shopspring/decimal"
+	"log"
+	"net/url"
 )
 
 const portfolioUrl = "ConsultarCarteiraAtivos.aspx"
 
-func getAccountPortfolio(agent, account string, payloadList []map[string]string) []Asset {
+func getAccountPortfolio(agent, account string, payloadList []map[string]string) []models.Asset {
 
 	log.Printf("------ getAccountPortfolio( %s , %s )", agent, account)
 	log.Printf("\t(Post): %s", ceiBaseUrl+portfolioUrl)
@@ -35,7 +35,7 @@ func getAccountPortfolio(agent, account string, payloadList []map[string]string)
 
 	page := utils.PostPage(ceiBaseUrl+portfolioUrl, payload)
 
-	var userPortfolio []Asset
+	var userPortfolio []models.Asset
 
 	portfolioTables := htmlquery.Find(page, "//table[@class='Responsive']")
 	for _, table := range portfolioTables {
@@ -51,7 +51,7 @@ func getAccountPortfolio(agent, account string, payloadList []map[string]string)
 				aInfos := htmlquery.Find(asset, "//td")
 
 				averagePrice, _ := decimal.NewFromString("0")
-				parsedAsset := Asset{
+				parsedAsset := models.Asset{
 					utils.CleanString(htmlquery.InnerText(aInfos[2])),
 					utils.CleanString(htmlquery.InnerText(aInfos[0])) + " " + utils.CleanString(htmlquery.InnerText(aInfos[1])),
 					"",
@@ -67,7 +67,7 @@ func getAccountPortfolio(agent, account string, payloadList []map[string]string)
 	return userPortfolio
 }
 
-func GetUserPortfolio(cpf, password string) []Asset {
+func GetUserPortfolio(cpf, password string) []models.Asset {
 	if login(cpf, password) {
 		var scrapList []map[string]string
 		agents, agentPayload := getAgents(portfolioUrl, scrapList)
@@ -83,6 +83,6 @@ func GetUserPortfolio(cpf, password string) []Asset {
 
 		return getAccountPortfolio(agents[0], accounts[0], accountPayload)
 	} else {
-		return []Asset{}
+		return []models.Asset{}
 	}
 }

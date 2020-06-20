@@ -1,18 +1,21 @@
 package scraper
 
-import "github.com/shopspring/decimal"
+import (
+	"bezuncapi/internal/models"
+	"github.com/shopspring/decimal"
+)
 
-func GetUserPortfolioFromTrades(cpf, password string) []Asset {
+func GetUserPortfolioFromTrades(cpf, password string) []models.Asset {
 	trades := GetUserTrades(cpf, password)
 
 	if len(trades) > 0 {
 
-		portfolioMap := map[string]*Asset{}
+		portfolioMap := map[string]*models.Asset{}
 
 		for _, trade := range trades {
 
 			if _, ok := portfolioMap[trade.Symbol]; !ok {
-				portfolioMap[trade.Symbol] = &Asset{
+				portfolioMap[trade.Symbol] = &models.Asset{
 					trade.Symbol,
 					trade.Description,
 					trade.Market,
@@ -30,7 +33,7 @@ func GetUserPortfolioFromTrades(cpf, password string) []Asset {
 			}
 		}
 
-		var portfolio []Asset
+		var portfolio []models.Asset
 
 		for _, asset := range portfolioMap {
 			asset.AveragePrice = asset.AveragePrice.DivRound(asset.Amount, 3)
