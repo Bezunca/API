@@ -2,7 +2,6 @@ package app
 
 import (
 	"bezuncapi/internal/app/controllers/user"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -13,11 +12,6 @@ import (
 func Middleware(e *echo.Echo) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-}
-
-func LUserAuth(ctx echo.Context, f func(ctx echo.Context) error) error {
-	fmt.Println("oi")
-	return f(ctx)
 }
 
 func UserAuth (next func(ctx echo.Context, user user.User) error) echo.HandlerFunc {
