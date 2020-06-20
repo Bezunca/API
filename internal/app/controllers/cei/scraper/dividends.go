@@ -9,12 +9,9 @@ import (
 	"github.com/antchfx/htmlquery"
 )
 
-var userCreditedDividends []Dividend
-var userProvisionedDividends []Dividend
+const dividendsUrl = "ConsultarProventos.aspx"
 
-var dividendsUrl = "ConsultarProventos.aspx"
-
-func getAccountDividends(agent, account string, payloadList []map[string]string) {
+func getAccountDividends(agent, account string, payloadList []map[string]string) map[string][]Dividend{
 
 	log.Printf("------ getAccountDividends( %s , %s )", agent, account)
 	log.Printf("\t(Post): %s", ceiBaseUrl+dividendsUrl)
@@ -37,6 +34,9 @@ func getAccountDividends(agent, account string, payloadList []map[string]string)
 	}
 
 	page := utils.PostPage(ceiBaseUrl+dividendsUrl, payload)
+
+	var userCreditedDividends []Dividend
+	var userProvisionedDividends []Dividend
 
 	dividendsTables := htmlquery.Find(page, "//table[@class='responsive']")
 	for _, table := range dividendsTables {
@@ -73,27 +73,29 @@ func getAccountDividends(agent, account string, payloadList []map[string]string)
 			}
 		}
 	}
+
+	return map[string][]Dividend{
+		"credited":    userCreditedDividends,
+		"provisioned": userProvisionedDividends,
+	}
 }
 
 func GetUserDividends(cpf, password string) map[string][]Dividend {
 	if login(cpf, password) {
 
-		scrapList := []map[string]string{
+		var scrapList []map[string]string
+		agents, agentPayload := getAgents(dividendsUrl, scrapList)
+
+		scrapList = []map[string]string{
 			{
 				"html_path": "//span[@id='ctl00_ContentPlaceHolder1_lblPeriodoFinal']",
 				"html_attr": "inner_text",
 				"form_key":  "ctl00$ContentPlaceHolder1$txtData",
 			},
 		}
+		accounts, accountPayload := getAgentAccounts(dividendsUrl, agents[0], agentPayload, scrapList)
 
-		_, sessionData := getAgents(dividendsUrl, scrapList)
-
-		getAccountDividends("0", "0", sessionData)
-
-		return map[string][]Dividend{
-			"credited":    userCreditedDividends,
-			"provisioned": userProvisionedDividends,
-		}
+		return getAccountDividends(agents[0], accounts[0], accountPayload)
 	} else {
 		return map[string][]Dividend{}
 	}
