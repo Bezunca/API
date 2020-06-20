@@ -11,7 +11,7 @@ import (
 
 const portfolioUrl = "ConsultarCarteiraAtivos.aspx"
 
-func getAccountPortfolio(agent, account string, payloadList []map[string]string) []Asset{
+func getAccountPortfolio(agent, account string, payloadList []map[string]string) []Asset {
 
 	log.Printf("------ getAccountPortfolio( %s , %s )", agent, account)
 	log.Printf("\t(Post): %s", ceiBaseUrl+portfolioUrl)

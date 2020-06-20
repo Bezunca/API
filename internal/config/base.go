@@ -7,9 +7,9 @@ import (
 )
 
 type Config struct {
-	Debug bool `config:"debug;default=false"`
+	Debug   bool   `config:"debug;default=false"`
 	Address string `config:"address;default=localhost"`
-	Port string `config:"port;default=8080"`
+	Port    string `config:"port;default=8080"`
 }
 
 func (c *Config) ApplicationAddress() string {
@@ -35,6 +35,3 @@ func Get() *Config {
 	}
 	return globalConfig
 }
-
-
-

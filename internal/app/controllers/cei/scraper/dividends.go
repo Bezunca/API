@@ -11,7 +11,7 @@ import (
 
 const dividendsUrl = "ConsultarProventos.aspx"
 
-func getAccountDividends(agent, account string, payloadList []map[string]string) map[string][]Dividend{
+func getAccountDividends(agent, account string, payloadList []map[string]string) map[string][]Dividend {
 
 	log.Printf("------ getAccountDividends( %s , %s )", agent, account)
 	log.Printf("\t(Post): %s", ceiBaseUrl+dividendsUrl)
