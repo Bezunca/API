@@ -69,3 +69,17 @@ func InsertDocuments(ctx echo.Context, database, collection string, documents []
 
 	return true
 }
+
+func UpdateDocuments(ctx echo.Context, database, collection string, filter bson.M, update bson.D) bool {
+
+	mongoClient := ctx.Get("mongoClient").(*mongo.Client)
+	queryCollection := mongoClient.Database(database).Collection(collection)
+	queryCtx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+
+	_, err := queryCollection.UpdateMany(queryCtx, filter, update)
+	if err != nil {
+		return false
+	}
+
+	return true
+}

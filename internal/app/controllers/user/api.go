@@ -3,27 +3,14 @@ package user
 import (
 	"bezuncapi/internal/config"
 	"bezuncapi/internal/models"
+	"bezuncapi/internal/utils"
 	"bezuncapi/internal/validators"
-	"github.com/dgrijalva/jwt-go"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"strings"
 )
-
-func createToken(user models.User) (string, error) {
-
-	configs := config.Get()
-
-	atClaims := jwt.MapClaims{}
-	atClaims["user_email"] = user.AuthCredentials.Email
-
-	//TODO: Token expiration
-
-	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	token, err := at.SignedString([]byte(configs.JWTSecret))
-
-	return token, err
-}
 
 func Register(ctx echo.Context) error {
 
@@ -49,6 +36,34 @@ func Register(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "usuário não foi inserido no banco"})
 	}
 
+	err = sendRegisterEmail(user)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	return ctx.JSON(http.StatusOK, nil)
+}
+
+func ConfirmRegistration(ctx echo.Context) error {
+
+	tokenString := strings.Split(ctx.Request().URL.Path, "/")[3]
+
+	configs := config.Get()
+	decoded, err := utils.DecodeToken(tokenString, configs.JWTSecretEmail)
+	if err != nil || decoded["user_email"] == nil {
+		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+	}
+
+	user, err := GetUserByEmail(ctx, decoded["user_email"].(string))
+	if err != nil {
+		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+	}
+
+	updated := UpdateUserRegisterConfirmation(ctx, user.AuthCredentials.Email)
+	if !updated {
+		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+	}
+
 	return ctx.JSON(http.StatusOK, nil)
 }
 
@@ -68,8 +83,13 @@ func Login(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
+	fmt.Println(user)
+	if !user.AuthCredentials.Activated {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "usuário não está ativado"})
+	}
 
-	token, err := createToken(user)
+	configs := config.Get()
+	token, err := utils.CreateToken(user, configs.JWTSecretAuth)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
 	}

@@ -28,9 +28,15 @@ func ParseAuthCredentials(data map[string]interface{}) (models.AuthCredentials, 
 		return models.AuthCredentials{}, false
 	}
 
+	activated, ok := ParseBool(authCredentials, "activated")
+	if !ok {
+		return models.AuthCredentials{}, false
+	}
+
 	return models.AuthCredentials{
 		Email:    email,
 		Password: password,
+		Activated: activated,
 	}, true
 }
 

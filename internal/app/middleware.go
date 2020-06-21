@@ -5,7 +5,7 @@ import (
 	"bezuncapi/internal/config"
 	"bezuncapi/internal/database"
 	"bezuncapi/internal/models"
-	"github.com/dgrijalva/jwt-go"
+	"bezuncapi/internal/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
@@ -37,24 +37,16 @@ func UserAuth(next func(ctx echo.Context, user models.User) error) echo.HandlerF
 
 		tokenString := ctx.Request().Header.Get("Authorization")
 
-		claims := jwt.MapClaims{}
-		_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(configs.JWTSecret), nil
-		})
+		decoded, err := utils.DecodeToken(tokenString, configs.JWTSecretAuth)
+		if err != nil || decoded["user_email"] == nil {
+			return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+		}
+
+		userObj, err := user.GetUserByEmail(ctx, decoded["user_email"].(string))
 		if err != nil {
 			return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
 		}
 
-		if claims["user_email"] != nil {
-
-			userObj, err := user.GetUserByEmail(ctx, claims["user_email"].(string))
-			if err != nil {
-				return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
-			}
-
-			return next(ctx, userObj)
-		} else {
-			return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
-		}
+		return next(ctx, userObj)
 	}
 }

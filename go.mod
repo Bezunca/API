@@ -12,6 +12,8 @@ require (
 	github.com/golang/protobuf v1.2.0
 	github.com/labstack/echo/v4 v4.1.16
 	github.com/labstack/gommon v0.3.0
+	github.com/sendgrid/rest v2.6.0+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.6.0+incompatible
 	github.com/shopspring/decimal v1.2.0
 	go.mongodb.org/mongo-driver v1.3.4
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d

@@ -32,3 +32,20 @@ func ParseString(data map[string]interface{}, fieldName string) (string, bool) {
 
 	return fieldString, true
 }
+
+func ParseBool(data map[string]interface{}, fieldName string) (bool, bool) {
+
+	fieldRaw, ok := data[fieldName]
+	if !ok {
+		return false, false
+	}
+
+	fieldBool, ok := fieldRaw.(bool)
+	if !ok {
+		return false, false
+	}
+
+	return fieldBool, true
+}
+
+

@@ -10,23 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetUsers(ctx echo.Context, filter bson.M, findOptions *options.FindOptions) ([]models.User, error) {
-
-	users, err := database.FindDocuments(
-		ctx,
-		database.UserDatabase,
-		database.UsersCollection,
-		filter,
-		findOptions,
-		parsers.ParseUsers,
-	)
-	if err != nil {
-		return []models.User{}, err
-	}
-
-	return users.([]models.User), nil
-}
-
 func PostUser(ctx echo.Context, user models.User) bool {
 
 	users := make([]interface{}, 1)
@@ -36,7 +19,8 @@ func PostUser(ctx echo.Context, user models.User) bool {
 		ctx,
 		database.UserDatabase,
 		database.UsersCollection,
-		users)
+		users,
+	)
 
 	return inserted
 }
@@ -46,15 +30,30 @@ func GetUserByEmail(ctx echo.Context, email string) (models.User, error) {
 	filter := bson.M{"auth_credentials.email": email}
 	findOptions := options.Find()
 
-	users, err := GetUsers(ctx, filter, findOptions)
-
+	usersInterface, err := database.FindDocuments(ctx, database.UserDatabase, database.UsersCollection, filter, findOptions, parsers.ParseUsers)
 	if err != nil {
 		return models.User{}, err
 	}
+
+	users := usersInterface.([]models.User)
 
 	if len(users) == 0 {
 		return models.User{}, errors.New("não existe usuário com este email")
 	}
 
 	return users[0], nil
+}
+
+func UpdateUserRegisterConfirmation(ctx echo.Context, email string) bool {
+
+	filter := bson.M{"auth_credentials.email": email}
+	update := bson.D{
+		{"$set", bson.D{
+				{"auth_credentials.activated", true},
+			},
+		},
+	}
+
+	updated := database.UpdateDocuments(ctx, database.UserDatabase, database.UsersCollection, filter, update)
+	return updated
 }

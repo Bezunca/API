@@ -7,14 +7,16 @@ import (
 )
 
 type Config struct {
-	Debug         bool   `config:"debug;default=false"`
-	Address       string `config:"address;default=localhost"`
-	Port          string `config:"port;default=8080"`
-	MongoHost     string `config:"mongo-host;default=localhost"`
-	MongoPort     string `config:"mongo-port;default=27017"`
-	MongoUser     string `config:"mongo-user;default=root"`
-	MongoPassword string `config:"mongo-password;required"`
-	JWTSecret     string `config:"jwt-secret;default=secret"`
+	Debug          bool   `config:"debug;default=false"`
+	Address        string `config:"address;default=localhost"`
+	Port           string `config:"port;default=8080"`
+	MongoHost      string `config:"mongo-host;default=localhost"`
+	MongoPort      string `config:"mongo-port;default=27017"`
+	MongoUser      string `config:"mongo-user;default=root"`
+	MongoPassword  string `config:"mongo-password;required"`
+	JWTSecretAuth  string `config:"jwt-secret-auth;default=secret"`
+	JWTSecretEmail string `config:"jwt-secret-email;default=secret"`
+	SendGridAPIKEY string `config:"sendgrid-api-key;default=key"`
 }
 
 func (c *Config) MongoAddress() string {
