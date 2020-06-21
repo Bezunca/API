@@ -1,38 +1,74 @@
 package parsers
 
-import "bezuncapi/internal/models"
+import (
+	"bezuncapi/internal/models"
+	"context"
+	"go.mongodb.org/mongo-driver/mongo"
+)
 
-func ParseLoginCredentials(data map[string]interface{}) (models.LoginCredentials, bool) {
+func ParseAuthCredentials(data map[string]interface{}) (models.AuthCredentials, bool) {
 
-	_loginCredentials, ok := data["login_credentials"]
+	_authCredentials, ok := data["auth_credentials"]
 	if !ok {
-		return models.LoginCredentials{}, false
+		return models.AuthCredentials{}, false
 	}
 
-	loginCredentials, ok := _loginCredentials.(map[string]interface{})
+	authCredentials, ok := _authCredentials.(map[string]interface{})
 	if !ok {
-		return models.LoginCredentials{}, false
+		return models.AuthCredentials{}, false
 	}
 
-	return models.LoginCredentials{
-		Email: loginCredentials["email"].(string),
+	email, ok := ParseString(authCredentials, "email")
+	if !ok {
+		return models.AuthCredentials{}, false
+	}
+
+	password, ok := ParseString(authCredentials, "password")
+	if !ok {
+		return models.AuthCredentials{}, false
+	}
+
+	return models.AuthCredentials{
+		Email:    email,
+		Password: password,
 	}, true
 }
 
-func ParseUser(data map[string]interface{}) (models.User, bool) {
+func ParseUsers(cursor *mongo.Cursor) (interface{}, bool) {
 
-	id, ok := ParseID(data)
-	if !ok {
-		return models.User{}, false
+	var users []models.User
+
+	for cursor.Next(context.TODO()) {
+
+		var data map[string]interface{}
+		err := cursor.Decode(&data)
+		if err != nil {
+			return nil, false
+		}
+
+		id, ok := ParseID(data)
+		if !ok {
+			return nil, false
+		}
+
+		authCredentials, ok := ParseAuthCredentials(data)
+		if !ok {
+			return nil, false
+		}
+
+		name, ok := ParseString(data, "name")
+		if !ok {
+			return nil, false
+		}
+
+		user := models.User{
+			ID:              id,
+			Name:            name,
+			AuthCredentials: authCredentials,
+		}
+
+		users = append(users, user)
 	}
 
-	loginCredentials, ok := ParseLoginCredentials(data)
-	if !ok {
-		return models.User{}, false
-	}
-
-	return models.User{
-		ID:               id,
-		LoginCredentials: loginCredentials,
-	}, true
+	return users, true
 }

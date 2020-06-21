@@ -22,8 +22,9 @@ func Routes(router *echo.Router) {
 	router.Add(http.MethodGet, "/user_portfolio", cei.UserPortfolio)
 
 	// User
-	router.Add(http.MethodPost, "user_login", user.Login)
-	router.Add(http.MethodGet, "user_info", UserAuth(user.Info))
+	router.Add(http.MethodPost, "user/register", user.Register)
+	router.Add(http.MethodPost, "user/login", user.Login)
+	router.Add(http.MethodGet, "user/info", UserAuth(user.Info))
 }
 
 // Placeholder Handler

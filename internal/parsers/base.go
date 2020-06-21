@@ -15,10 +15,20 @@ func ParseID(data map[string]interface{}) (primitive.ObjectID, bool) {
 		return primitive.ObjectID{}, false
 	}
 
-	/*id := make([]uint8, len(rawId))
-	for i := 0; i < len(id); i++ {
-		id[i] = rawId[i]
-	}*/
-
 	return rawId, true
+}
+
+func ParseString(data map[string]interface{}, fieldName string) (string, bool) {
+
+	fieldRaw, ok := data[fieldName]
+	if !ok {
+		return "", false
+	}
+
+	fieldString, ok := fieldRaw.(string)
+	if !ok {
+		return "", false
+	}
+
+	return fieldString, true
 }

@@ -12,7 +12,6 @@ type Config struct {
 	Port          string `config:"port;default=8080"`
 	MongoHost     string `config:"mongo-host;default=localhost"`
 	MongoPort     string `config:"mongo-port;default=27017"`
-	MongoDatabase string `config:"mongo-database;default=bezunca"`
 	MongoUser     string `config:"mongo-user;default=root"`
 	MongoPassword string `config:"mongo-password;required"`
 	JWTSecret     string `config:"jwt-secret;default=secret"`
