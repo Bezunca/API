@@ -57,3 +57,18 @@ func UpdateUserRegisterConfirmation(ctx echo.Context, email string) bool {
 	updated := database.UpdateDocuments(ctx, database.UserDatabase, database.UsersCollection, filter, update)
 	return updated
 }
+
+func UpdateUserResetPassword(ctx echo.Context, email, password string) bool {
+
+	filter := bson.M{"auth_credentials.email": email}
+	update := bson.D{
+		{"$set", bson.D{
+			{"auth_credentials.activated", true},
+			{"auth_credentials.password", password},
+		},
+		},
+	}
+
+	updated := database.UpdateDocuments(ctx, database.UserDatabase, database.UsersCollection, filter, update)
+	return updated
+}

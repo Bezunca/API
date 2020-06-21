@@ -24,6 +24,8 @@ func Routes(router *echo.Router) {
 	// User
 	router.Add(http.MethodPost, "/user/register", user.Register)
 	router.Add(http.MethodGet, "/user/confirm_registration/:token", user.ConfirmRegistration)
+	router.Add(http.MethodPost, "/user/forgot_password", user.ForgotPassword)
+	router.Add(http.MethodPost, "/user/reset_password", user.ResetPassword)
 	router.Add(http.MethodPost, "/user/login", user.Login)
 	router.Add(http.MethodGet, "/user/info", UserAuth(user.Info))
 }

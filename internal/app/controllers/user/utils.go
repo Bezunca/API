@@ -25,3 +25,23 @@ func sendRegisterEmail(user models.User) error {
 
 	return nil
 }
+
+func sendForgotPasswordEmail(user models.User) error {
+
+	configs := config.Get()
+	token, err := utils.CreateToken(user, configs.JWTSecretEmail)
+	if err != nil {
+		return err
+	}
+
+	subject := "Redefinição de Senha"
+	plainTextContent := "Venha jovem!"
+	htmlContent := "<a href='http://" + configs.ApplicationAddress() + "/user/reset_password_redirect/" + token + "'>REDEFINIR SENHA</a>"
+
+	err = utils.SendEmail(user.Name, user.AuthCredentials.Email, subject, plainTextContent, htmlContent)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

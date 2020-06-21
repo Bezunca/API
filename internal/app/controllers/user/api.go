@@ -14,22 +14,28 @@ import (
 
 func Register(ctx echo.Context) error {
 
-	user, err := validators.ValidateUserRegister(ctx)
+	registrationForm, err := validators.ValidateUserRegister(ctx)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	_, err = GetUserByEmail(ctx, user.AuthCredentials.Email)
+	_, err = GetUserByEmail(ctx, registrationForm.Email)
 	if err == nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "já existe uma conta cadastrada com esse email"})
 	}
 
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.AuthCredentials.Password), bcrypt.MinCost)
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(registrationForm.Password), bcrypt.MinCost)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
 	}
 
-	user.AuthCredentials.Password = string(hashPassword)
+	user := models.User{
+		Name: registrationForm.Name,
+		AuthCredentials: models.AuthCredentials{
+			Email: registrationForm.Email,
+			Password: string(hashPassword),
+		},
+	}
 
 	inserted := PostUser(ctx, user)
 	if !inserted {
@@ -67,19 +73,70 @@ func ConfirmRegistration(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, nil)
 }
 
+func ForgotPassword(ctx echo.Context) error {
+
+	forgotPasswordForm, err := validators.ValidateUserForgotPassword(ctx)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	user, err := GetUserByEmail(ctx, forgotPasswordForm.Email)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "não existe usuário com esse email"})
+	}
+
+	err = sendForgotPasswordEmail(user)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+	fmt.Println("what")
+	return ctx.JSON(http.StatusOK, nil)
+}
+
+func ResetPassword(ctx echo.Context) error {
+
+	resetPasswordForm, err := validators.ValidateUserResetPassword(ctx)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	configs := config.Get()
+	decoded, err := utils.DecodeToken(resetPasswordForm.Token, configs.JWTSecretEmail)
+	if err != nil || decoded["user_email"] == nil {
+		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+	}
+
+	user, err := GetUserByEmail(ctx, decoded["user_email"].(string))
+	if err != nil {
+		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+	}
+
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(resetPasswordForm.Password), bcrypt.MinCost)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
+	}
+
+	updated := UpdateUserResetPassword(ctx, user.AuthCredentials.Email, string(hashPassword))
+	if !updated {
+		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+	}
+
+	return ctx.JSON(http.StatusOK, nil)
+}
+
 func Login(ctx echo.Context) error {
 
-	authCredentials, err := validators.ValidateUserLogin(ctx)
+	loginForm, err := validators.ValidateUserLogin(ctx)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	user, err := GetUserByEmail(ctx, authCredentials.Email)
+	user, err := GetUserByEmail(ctx, loginForm.Email)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.AuthCredentials.Password), []byte(authCredentials.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.AuthCredentials.Password), []byte(loginForm.Password))
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
