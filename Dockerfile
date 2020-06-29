@@ -1,6 +1,6 @@
 # === Pre Stages global arguments ===========================================
 # --- Project Name ---
-ARG PROJECT_NAME="api"
+ARG PROJECT_NAME="bezuncapi"
 
 # --- Create user ---
 ARG USERNAME="bezunca"
