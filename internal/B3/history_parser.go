@@ -140,13 +140,13 @@ func parseContentLine(raw_line string) SecurityQuote {
 func ParseHistoricData(rawData []string) (Header, []SecurityQuote) {
 	header := parseHeader(rawData[0])
 	contentList := make([]SecurityQuote, len(rawData)-3)
-	for i, raw_line := range rawData[1:len(rawData)-2] {
+	for i, raw_line := range rawData[1 : len(rawData)-2] {
 		contentList[i] = parseContentLine(raw_line)
 	}
 	return header, contentList
 }
 
-func ParseHistoricDataFromBytes(data []byte) (Header, []SecurityQuote){
+func ParseHistoricDataFromBytes(data []byte) (Header, []SecurityQuote) {
 	segmentedLines := strings.Split(string(data), "\n")
 	return ParseHistoricData(segmentedLines)
 }

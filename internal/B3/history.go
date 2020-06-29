@@ -11,7 +11,7 @@ import (
 	"os"
 )
 
-func extractZipInMemory(data []byte) ([]byte, error){
+func extractZipInMemory(data []byte) ([]byte, error) {
 	readerAt := bytes.NewReader(data)
 	r, err := zip.NewReader(readerAt, int64(len(data)))
 	if err != nil {
@@ -35,7 +35,7 @@ func extractZipInMemory(data []byte) ([]byte, error){
 	return nil, errors.New("no file found inside zip")
 }
 
-func downloadZip(year uint) (Header, []SecurityQuote){
+func downloadZip(year uint) (Header, []SecurityQuote) {
 	// Gets the price of a given ticker through B3's public API
 	// Prices are 15 minutes in the past
 

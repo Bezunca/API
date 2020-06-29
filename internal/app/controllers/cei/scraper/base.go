@@ -2,10 +2,9 @@ package scraper
 
 import (
 	"bezuncapi/internal/utils"
+	"github.com/antchfx/htmlquery"
 	"log"
 	"net/url"
-
-	"github.com/antchfx/htmlquery"
 )
 
 const ceiBaseUrl = "https://cei.b3.com.br/CEI_Responsivo/"
