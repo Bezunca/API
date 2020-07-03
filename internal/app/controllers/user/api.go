@@ -9,7 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
-	"strings"
 )
 
 func Register(ctx echo.Context) error {
@@ -52,10 +51,13 @@ func Register(ctx echo.Context) error {
 
 func ConfirmRegistration(ctx echo.Context) error {
 
-	tokenString := strings.Split(ctx.Request().URL.Path, "/")[3]
+	confirmRegistrationForm, err := validators.ValidateUserConfirmRegistration(ctx)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
 
 	configs := config.Get()
-	decoded, err := utils.DecodeToken(tokenString, configs.JWTSecretEmail)
+	decoded, err := utils.DecodeToken(confirmRegistrationForm.Token, configs.JWTSecretEmail)
 	if err != nil || decoded["user_email"] == nil {
 		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
 	}
@@ -70,7 +72,12 @@ func ConfirmRegistration(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
 	}
 
-	return ctx.JSON(http.StatusOK, nil)
+	token, err := utils.CreateToken(user, configs.JWTSecretAuth)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
+	}
+
+	return ctx.JSON(http.StatusOK, map[string]string{"token": token})
 }
 
 func ForgotPassword(ctx echo.Context) error {

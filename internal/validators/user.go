@@ -25,6 +25,10 @@ type ResetPasswordForm struct {
 	Token     string `json:"token" validate:"required"`
 }
 
+type ConfirmRegistrationForm struct {
+	Token     string `json:"token" validate:"required"`
+}
+
 func ValidateUserLogin(ctx echo.Context) (LoginForm, error) {
 
 	userEmail, userPassword, ok := ctx.Request().BasicAuth()
@@ -86,4 +90,18 @@ func ValidateUserResetPassword(ctx echo.Context) (ResetPasswordForm, error) {
 	}
 
 	return resetPasswordForm, nil
+}
+
+func ValidateUserConfirmRegistration(ctx echo.Context) (ConfirmRegistrationForm, error) {
+
+	confirmRegistrationForm := ConfirmRegistrationForm{}
+	if err := ctx.Bind(&confirmRegistrationForm); err != nil {
+		return ConfirmRegistrationForm{}, err
+	}
+	err := ValidateStruct(confirmRegistrationForm)
+	if err != nil {
+		return ConfirmRegistrationForm{}, err
+	}
+
+	return confirmRegistrationForm, nil
 }

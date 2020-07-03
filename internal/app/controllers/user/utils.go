@@ -4,7 +4,21 @@ import (
 	"bezuncapi/internal/config"
 	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
+	"net/url"
 )
+
+func generateDynamicLink(configs *config.Config, params map[string]string) string {
+
+	dl := configs.DynamicLink + "?"
+	for key, value := range params {
+		dl += key + "=" + value + "&"
+	}
+
+	//TODO: IOS Flutter DynamicLink
+	dl += "apn=" + configs.FlutterAndroidAppID
+
+	return dl
+}
 
 func sendRegisterEmail(user models.User) error {
 
@@ -16,7 +30,13 @@ func sendRegisterEmail(user models.User) error {
 
 	subject := "Confirmação de Cadastro"
 	plainTextContent := "Bem Vindo!"
-	htmlContent := "<a href='http://" + configs.ApplicationAddress() + "/user/confirm_registration/" + token + "'>CONFIRMAR CADASTRO</a>"
+
+	innerLink := url.QueryEscape(configs.WebURL + "confirm_registration?token=" + token)
+	dynamicLink := generateDynamicLink(configs, map[string]string{
+		"link": innerLink,
+	})
+
+	htmlContent := "<a href='" + dynamicLink + "'>CONFIRMAR CADASTRO</a>"
 
 	err = utils.SendEmail(user.Name, user.AuthCredentials.Email, subject, plainTextContent, htmlContent)
 	if err != nil {
@@ -36,7 +56,13 @@ func sendForgotPasswordEmail(user models.User) error {
 
 	subject := "Redefinição de Senha"
 	plainTextContent := "Venha jovem!"
-	htmlContent := "<a href='http://" + configs.ApplicationAddress() + "/user/reset_password_redirect/" + token + "'>REDEFINIR SENHA</a>"
+
+	innerLink := url.QueryEscape(configs.WebURL + "reset_password?token=" + token)
+	dynamicLink := generateDynamicLink(configs, map[string]string{
+		"link": innerLink,
+	})
+
+	htmlContent := "<a href='" + dynamicLink + "'>REDEFINIR SENHA</a>"
 
 	err = utils.SendEmail(user.Name, user.AuthCredentials.Email, subject, plainTextContent, htmlContent)
 	if err != nil {
