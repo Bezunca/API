@@ -97,6 +97,13 @@ COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /home/  /home/
 
+############################# Certificate authority fix ######################################
+# TODO: Findout what curl does that fixes sendgrid's ca certificate validation work
+ENV DEBIAN_FRONTEND=noninteractive
+ADD "https://gist.githubusercontent.com/HeavenVolkoff/ff7b77b9087f956b8df944772e93c071/raw" /etc/apt/apt.conf.d/99custom
+RUN apt-get update -qq && apt-get install curl
+##############################################################################################
+
 # Setup runtime
 USER ${USERNAME}
 VOLUME /home/${USERNAME}/logs
@@ -105,6 +112,5 @@ WORKDIR /home/${USERNAME}
 # Exposed ports
 EXPOSE 8080
 
-RUN echo ${PROJECT_NAME}
 # Run application
 ENTRYPOINT ["/usr/local/bin/executable"]
