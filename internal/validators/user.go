@@ -2,7 +2,6 @@ package validators
 
 import (
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 type LoginForm struct {
@@ -29,11 +28,11 @@ type ConfirmRegistrationForm struct {
 	Token     string `json:"token" validate:"required"`
 }
 
-func ValidateUserLogin(ctx echo.Context) (LoginForm, error) {
+func ValidateUserLogin(ctx echo.Context) (LoginForm, map[string]string) {
 
 	userEmail, userPassword, ok := ctx.Request().BasicAuth()
 	if !ok {
-		return LoginForm{}, echo.NewHTTPError(http.StatusBadRequest, "Missing user's e-mail and password in HTTP Basic Auth")
+		return LoginForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 
 	loginForm := LoginForm{
@@ -49,11 +48,11 @@ func ValidateUserLogin(ctx echo.Context) (LoginForm, error) {
 	return loginForm, nil
 }
 
-func ValidateUserRegister(ctx echo.Context) (RegistrationForm, error) {
+func ValidateUserRegister(ctx echo.Context) (RegistrationForm, map[string]string) {
 
 	registrationForm := RegistrationForm{}
 	if err := ctx.Bind(&registrationForm); err != nil {
-		return RegistrationForm{}, err
+		return RegistrationForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 
 	err := ValidateStruct(registrationForm)
@@ -64,11 +63,11 @@ func ValidateUserRegister(ctx echo.Context) (RegistrationForm, error) {
 	return registrationForm, nil
 }
 
-func ValidateUserForgotPassword(ctx echo.Context) (ForgotPasswordForm, error) {
+func ValidateUserForgotPassword(ctx echo.Context) (ForgotPasswordForm, map[string]string) {
 
 	forgotPasswordForm := ForgotPasswordForm{}
 	if err := ctx.Bind(&forgotPasswordForm); err != nil {
-		return ForgotPasswordForm{}, err
+		return ForgotPasswordForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 	err := ValidateStruct(forgotPasswordForm)
 	if err != nil {
@@ -78,11 +77,11 @@ func ValidateUserForgotPassword(ctx echo.Context) (ForgotPasswordForm, error) {
 	return forgotPasswordForm, nil
 }
 
-func ValidateUserResetPassword(ctx echo.Context) (ResetPasswordForm, error) {
+func ValidateUserResetPassword(ctx echo.Context) (ResetPasswordForm, map[string]string) {
 
 	resetPasswordForm := ResetPasswordForm{}
 	if err := ctx.Bind(&resetPasswordForm); err != nil {
-		return ResetPasswordForm{}, err
+		return ResetPasswordForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 	err := ValidateStruct(resetPasswordForm)
 	if err != nil {
@@ -92,11 +91,11 @@ func ValidateUserResetPassword(ctx echo.Context) (ResetPasswordForm, error) {
 	return resetPasswordForm, nil
 }
 
-func ValidateUserConfirmRegistration(ctx echo.Context) (ConfirmRegistrationForm, error) {
+func ValidateUserConfirmRegistration(ctx echo.Context) (ConfirmRegistrationForm, map[string]string) {
 
 	confirmRegistrationForm := ConfirmRegistrationForm{}
 	if err := ctx.Bind(&confirmRegistrationForm); err != nil {
-		return ConfirmRegistrationForm{}, err
+		return ConfirmRegistrationForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 	err := ValidateStruct(confirmRegistrationForm)
 	if err != nil {

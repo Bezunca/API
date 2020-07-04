@@ -5,7 +5,6 @@ import (
 	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
 	"bezuncapi/internal/validators"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -13,19 +12,19 @@ import (
 
 func Register(ctx echo.Context) error {
 
-	registrationForm, err := validators.ValidateUserRegister(ctx)
-	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	registrationForm, validationErrors := validators.ValidateUserRegister(ctx)
+	if validationErrors != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
 	}
 
-	_, err = GetUserByEmail(ctx, registrationForm.Email)
+	_, err := GetUserByEmail(ctx, registrationForm.Email)
 	if err == nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "já existe uma conta cadastrada com esse email"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Já existe uma conta cadastrada com esse email"}})
 	}
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(registrationForm.Password), bcrypt.MinCost)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao encriptar senha"}})
 	}
 
 	user := models.User{
@@ -38,12 +37,12 @@ func Register(ctx echo.Context) error {
 
 	inserted := PostUser(ctx, user)
 	if !inserted {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "usuário não foi inserido no banco"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao criar conta"}})
 	}
 
 	err = sendRegisterEmail(user)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao enviar email de confirmação"}})
 	}
 
 	return ctx.JSON(http.StatusOK, nil)
@@ -51,30 +50,30 @@ func Register(ctx echo.Context) error {
 
 func ConfirmRegistration(ctx echo.Context) error {
 
-	confirmRegistrationForm, err := validators.ValidateUserConfirmRegistration(ctx)
-	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	confirmRegistrationForm, validationErrors := validators.ValidateUserConfirmRegistration(ctx)
+	if validationErrors != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
 	}
 
 	configs := config.Get()
 	decoded, err := utils.DecodeToken(confirmRegistrationForm.Token, configs.JWTSecretEmail)
 	if err != nil || decoded["user_email"] == nil {
-		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 	}
 
 	user, err := GetUserByEmail(ctx, decoded["user_email"].(string))
 	if err != nil {
-		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 	}
 
 	updated := UpdateUserRegisterConfirmation(ctx, user.AuthCredentials.Email)
 	if !updated {
-		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao ativar conta"}})
 	}
 
 	token, err := utils.CreateToken(user, configs.JWTSecretAuth)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]string{"token": token})
@@ -82,50 +81,50 @@ func ConfirmRegistration(ctx echo.Context) error {
 
 func ForgotPassword(ctx echo.Context) error {
 
-	forgotPasswordForm, err := validators.ValidateUserForgotPassword(ctx)
-	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	forgotPasswordForm, validationErrors := validators.ValidateUserForgotPassword(ctx)
+	if validationErrors != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
 	}
 
 	user, err := GetUserByEmail(ctx, forgotPasswordForm.Email)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "não existe usuário com esse email"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Não existe conta com esse email"}})
 	}
 
 	err = sendForgotPasswordEmail(user)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao enviar email de redefinição"}})
 	}
-	fmt.Println("what")
+
 	return ctx.JSON(http.StatusOK, nil)
 }
 
 func ResetPassword(ctx echo.Context) error {
 
-	resetPasswordForm, err := validators.ValidateUserResetPassword(ctx)
-	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	resetPasswordForm, validationErrors := validators.ValidateUserResetPassword(ctx)
+	if validationErrors != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
 	}
 
 	configs := config.Get()
 	decoded, err := utils.DecodeToken(resetPasswordForm.Token, configs.JWTSecretEmail)
 	if err != nil || decoded["user_email"] == nil {
-		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 	}
 
 	user, err := GetUserByEmail(ctx, decoded["user_email"].(string))
 	if err != nil {
-		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 	}
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(resetPasswordForm.Password), bcrypt.MinCost)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao encriptar senha"}})
 	}
 
 	updated := UpdateUserResetPassword(ctx, user.AuthCredentials.Email, string(hashPassword))
 	if !updated {
-		return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao redefinir senha"}})
 	}
 
 	return ctx.JSON(http.StatusOK, nil)
@@ -133,29 +132,29 @@ func ResetPassword(ctx echo.Context) error {
 
 func Login(ctx echo.Context) error {
 
-	loginForm, err := validators.ValidateUserLogin(ctx)
-	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	loginForm, validationErrors := validators.ValidateUserLogin(ctx)
+	if validationErrors != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
 	}
 
 	user, err := GetUserByEmail(ctx, loginForm.Email)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Email ou senha incorretos"}})
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.AuthCredentials.Password), []byte(loginForm.Password))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Email ou senha incorretos"}})
 	}
-	fmt.Println(user)
+
 	if !user.AuthCredentials.Activated {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "usuário não está ativado"})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Conta não está ativada"}})
 	}
 
 	configs := config.Get()
 	token, err := utils.CreateToken(user, configs.JWTSecretAuth)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]error{"error": err})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]string{"token": token})
