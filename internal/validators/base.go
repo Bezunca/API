@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"fmt"
 	"github.com/go-playground/locales/pt_BR"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -28,10 +29,19 @@ func getValidator() (*validator.Validate, ut.Translator) {
 		return name
 	})
 
+	// TODO: Fazer demais mensagens
+
 	_ = v.RegisterTranslation("required", trans, func(ut ut.Translator) error {
-		return ut.Add("required", "{0}:Obrigatório", true)
+		return ut.Add("required", "Obrigatório", true)
 	}, func(ut ut.Translator, fe validator.FieldError) string {
 		t, _ := ut.T("required", fe.Field())
+		return t
+	})
+
+	_ = v.RegisterTranslation("email", trans, func(ut ut.Translator) error {
+		return ut.Add("email", "Email inválido", true)
+	}, func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T("email", fe.Field())
 		return t
 	})
 
@@ -42,14 +52,15 @@ func ValidateStruct(s interface{}) map[string]string {
 
 	v, trans := getValidator()
 
+	fmt.Println("lol")
+
 	err := v.Struct(s)
 	if err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		if len(validationErrors) > 0 {
 			vErrors := map[string]string{}
 			for _, e := range validationErrors {
-				eArray := strings.Split(e.Translate(trans), ":")
-				vErrors[eArray[0]] = eArray[1]
+				vErrors[e.Field()] = e.Translate(trans)
 			}
 			return vErrors
 		}
