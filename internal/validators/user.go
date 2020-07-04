@@ -12,7 +12,6 @@ type LoginForm struct {
 type RegistrationForm struct {
 	Email                 string `json:"email" validate:"required,email"`
 	Password              string `json:"password" validate:"required,min=3,max=25"`
-	PasswordConfirmation  string `json:"password_confirmation"`
 	Name                  string `json:"name" validate:"required,min=3,max=25"`
 }
 
@@ -61,10 +60,6 @@ func ValidateUserRegister(ctx echo.Context) (RegistrationForm, map[string]string
 		return RegistrationForm{}, err
 	}
 
-	if registrationForm.Password != registrationForm.PasswordConfirmation {
-		return RegistrationForm{}, map[string]string{"password_confirmation": "Precisa ser igual a senha"}
-	}
-
 	return registrationForm, nil
 }
 
@@ -88,6 +83,7 @@ func ValidateUserResetPassword(ctx echo.Context) (ResetPasswordForm, map[string]
 	if err := ctx.Bind(&resetPasswordForm); err != nil {
 		return ResetPasswordForm{}, map[string]string{"general": "Formulário inválido"}
 	}
+
 	err := ValidateStruct(resetPasswordForm)
 	if err != nil {
 		return ResetPasswordForm{}, err
