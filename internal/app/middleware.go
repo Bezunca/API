@@ -1,7 +1,6 @@
 package app
 
 import (
-	"bezuncapi/internal/app/controllers/user"
 	"bezuncapi/internal/config"
 	"bezuncapi/internal/database"
 	"bezuncapi/internal/models"
@@ -37,15 +36,12 @@ func UserAuth(next func(ctx echo.Context, user models.User) error) echo.HandlerF
 
 		tokenString := ctx.Request().Header.Get("Authorization")
 
-		decoded, err := utils.DecodeToken(tokenString, configs.JWTSecretAuth)
-		if err != nil || decoded["user_email"] == nil {
-			return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
+		userObj, err := utils.ValidateToken(ctx, tokenString, configs.JWTSecretAuth)
+		if err != nil {
+			return ctx.JSON(http.StatusUnauthorized, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 		}
 
-		userObj, err := user.GetUserByEmail(ctx, decoded["user_email"].(string))
-		if err != nil {
-			return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid Token"})
-		}
+		// TODO: Renovar Token quando estiver perto de expirar
 
 		return next(ctx, userObj)
 	}

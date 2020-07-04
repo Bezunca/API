@@ -2,6 +2,7 @@ package user
 
 import (
 	"bezuncapi/internal/config"
+	"bezuncapi/internal/database"
 	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
 	"bezuncapi/internal/validators"
@@ -17,7 +18,7 @@ func Register(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
 	}
 
-	_, err := GetUserByEmail(ctx, registrationForm.Email)
+	_, err := database.GetUserByEmail(ctx, registrationForm.Email)
 	if err == nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Já existe uma conta cadastrada com esse email"}})
 	}
@@ -56,12 +57,7 @@ func ConfirmRegistration(ctx echo.Context) error {
 	}
 
 	configs := config.Get()
-	decoded, err := utils.DecodeToken(confirmRegistrationForm.Token, configs.JWTSecretEmail)
-	if err != nil || decoded["user_email"] == nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
-	}
-
-	user, err := GetUserByEmail(ctx, decoded["user_email"].(string))
+	user, err := utils.ValidateToken(ctx, confirmRegistrationForm.Token, configs.JWTSecretEmail)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 	}
@@ -71,7 +67,7 @@ func ConfirmRegistration(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao ativar conta"}})
 	}
 
-	token, err := utils.CreateToken(user, configs.JWTSecretAuth)
+	token, err := utils.CreateToken(user, utils.AuthExpiration, configs.JWTSecretAuth)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
 	}
@@ -86,7 +82,7 @@ func ForgotPassword(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
 	}
 
-	user, err := GetUserByEmail(ctx, forgotPasswordForm.Email)
+	user, err := database.GetUserByEmail(ctx, forgotPasswordForm.Email)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Não existe conta com esse email"}})
 	}
@@ -107,12 +103,7 @@ func ResetPassword(ctx echo.Context) error {
 	}
 
 	configs := config.Get()
-	decoded, err := utils.DecodeToken(resetPasswordForm.Token, configs.JWTSecretEmail)
-	if err != nil || decoded["user_email"] == nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
-	}
-
-	user, err := GetUserByEmail(ctx, decoded["user_email"].(string))
+	user, err := utils.ValidateToken(ctx, resetPasswordForm.Token, configs.JWTSecretEmail)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 	}
@@ -137,9 +128,9 @@ func Login(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
 	}
 
-	user, err := GetUserByEmail(ctx, loginForm.Email)
+	user, err := database.GetUserByEmail(ctx, loginForm.Email)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Email ou senha incorretos"}})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Emaill ou senha incorretos"}})
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.AuthCredentials.Password), []byte(loginForm.Password))
@@ -152,7 +143,7 @@ func Login(ctx echo.Context) error {
 	}
 
 	configs := config.Get()
-	token, err := utils.CreateToken(user, configs.JWTSecretAuth)
+	token, err := utils.CreateToken(user, utils.AuthExpiration, configs.JWTSecretAuth)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
 	}

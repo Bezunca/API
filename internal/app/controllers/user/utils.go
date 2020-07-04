@@ -23,7 +23,7 @@ func generateDynamicLink(configs *config.Config, params map[string]string) strin
 func sendRegisterEmail(user models.User) error {
 
 	configs := config.Get()
-	token, err := utils.CreateToken(user, configs.JWTSecretEmail)
+	token, err := utils.CreateToken(user, utils.EmailExpiration, configs.JWTSecretEmail)
 	if err != nil {
 		return err
 	}
@@ -49,13 +49,13 @@ func sendRegisterEmail(user models.User) error {
 func sendForgotPasswordEmail(user models.User) error {
 
 	configs := config.Get()
-	token, err := utils.CreateToken(user, configs.JWTSecretEmail)
+	token, err := utils.CreateToken(user, utils.EmailExpiration, configs.JWTSecretEmail)
 	if err != nil {
 		return err
 	}
 
 	subject := "Redefinição de Senha"
-	plainTextContent := "Venha jovem!"
+	plainTextContent := "Redefinição"
 
 	innerLink := url.QueryEscape(configs.WebURL + "reset_password?token=" + token)
 	dynamicLink := generateDynamicLink(configs, map[string]string{

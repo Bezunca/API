@@ -9,7 +9,7 @@ require (
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.3.0
-	github.com/golang/protobuf v1.2.0
+	github.com/golang/protobuf v1.2.0 // indirect
 	github.com/labstack/echo/v4 v4.1.16
 	github.com/labstack/gommon v0.3.0
 	github.com/sendgrid/rest v2.6.0+incompatible // indirect
@@ -18,5 +18,6 @@ require (
 	go.mongodb.org/mongo-driver v1.3.4
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d
 	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
+	github.com/Bezunca/mongo_connection v0.0.1
 )

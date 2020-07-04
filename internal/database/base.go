@@ -3,12 +3,15 @@ package database
 import (
 	"bezuncapi/internal/config"
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"errors"
-	"fmt"
+	"github.com/Bezunca/mongo_connection"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"io/ioutil"
 	"time"
 )
 
@@ -16,20 +19,24 @@ const UserDatabase = "bezunca"
 const UsersCollection = "users"
 
 func GetConnection() (*mongo.Client, error) {
+
 	configs := config.Get()
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
-	mongoClient, err := mongo.Connect(
-		ctx, options.Client().ApplyURI(
-			fmt.Sprintf(
-				"mongodb://%s:%s@%s/?appname=Daily%%20Refresh%%20Job",
-				configs.MongoUser,
-				configs.MongoPassword,
-				configs.MongoAddress(),
-			),
-		),
-	)
+	caChainBytes, err := ioutil.ReadFile(configs.CAFile)
+	if err != nil {
+		return nil, err
+	}
+	roots := x509.NewCertPool()
+	ok := roots.AppendCertsFromPEM(caChainBytes)
+	if !ok {
+		return nil, errors.New("unable to parse CA Chain file")
+	}
 
+	tlsConfig := &tls.Config{
+		RootCAs: roots,
+	}
+
+	mongoClient, err := mongo_connection.New(&configs.MongoDB, tlsConfig)
 	if err != nil {
 		return nil, err
 	}

@@ -592,3 +592,5 @@ MigrationBackup/
 
 # PROJECT #
 .env
+
+certificates
