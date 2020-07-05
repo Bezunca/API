@@ -10,7 +10,7 @@ import (
 func extractUserCPFAndCEIPassword(ctx echo.Context) (string, string, error) {
 	userCPF, ceiPassword, ok := ctx.Request().BasicAuth()
 	if !ok {
-		return "", "", echo.NewHTTPError(http.StatusBadRequest, "Missing user's CPF and CEI password in HTTP Basic Auth")
+		return "", "", echo.NewHTTPError(http.StatusBadRequest, "Missing auth's CPF and CEI password in HTTP Basic Auth")
 
 	}
 	return userCPF, ceiPassword, nil

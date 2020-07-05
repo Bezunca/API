@@ -21,7 +21,6 @@ const UsersCollection = "users"
 func GetConnection() (*mongo.Client, error) {
 
 	configs := config.Get()
-
 	caChainBytes, err := ioutil.ReadFile(configs.CAFile)
 	if err != nil {
 		return nil, err

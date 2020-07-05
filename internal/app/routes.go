@@ -1,9 +1,10 @@
 package app
 
 import (
+	"bezuncapi/internal/app/controllers/auth"
 	"bezuncapi/internal/app/controllers/b3"
 	"bezuncapi/internal/app/controllers/cei"
-	"bezuncapi/internal/app/controllers/user"
+	"bezuncapi/internal/app/controllers/wallet"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -21,13 +22,16 @@ func Routes(router *echo.Router) {
 	router.Add(http.MethodGet, "/user_dividends", cei.UserDividends)
 	router.Add(http.MethodGet, "/user_portfolio", cei.UserPortfolio)
 
-	// User
-	router.Add(http.MethodPost, "/user/register", user.Register)
-	router.Add(http.MethodPost, "/user/confirm_registration", user.ConfirmRegistration)
-	router.Add(http.MethodPost, "/user/forgot_password", user.ForgotPassword)
-	router.Add(http.MethodPost, "/user/reset_password", user.ResetPassword)
-	router.Add(http.MethodPost, "/user/login", user.Login)
-	router.Add(http.MethodGet, "/user/info", UserAuth(user.Info))
+	// Auth
+	router.Add(http.MethodPost, "/auth/register", auth.Register)
+	router.Add(http.MethodPost, "/auth/confirm_registration", auth.ConfirmRegistration)
+	router.Add(http.MethodPost, "/auth/forgot_password", auth.ForgotPassword)
+	router.Add(http.MethodPost, "/auth/reset_password", auth.ResetPassword)
+	router.Add(http.MethodPost, "/auth/login", auth.Login)
+	router.Add(http.MethodGet, "/auth/info", UserAuth(auth.Info))
+
+	// Wallets
+	router.Add(http.MethodPost, "/wallet/cei_sync", UserAuth(wallet.CEISync))
 }
 
 // Placeholder Handler

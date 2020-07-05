@@ -23,7 +23,7 @@ func getValidator() (*validator.Validate, ut.Translator) {
 		return fld.Tag.Get("json")
 	})
 
-	RegisterCustomTranslations(v, trans)
+	RegisterCustomValidations(v, trans)
 
 	return v, trans
 }

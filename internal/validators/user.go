@@ -5,27 +5,27 @@ import (
 )
 
 type LoginForm struct {
-	Email     string `json:"email" validate:"required,email"`
-	Password  string `json:"password" validate:"required,min=3,max=25"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=3,max=25"`
 }
 
 type RegistrationForm struct {
-	Email                 string `json:"email" validate:"required,email"`
-	Password              string `json:"password" validate:"required,min=3,max=25"`
-	Name                  string `json:"name" validate:"required,min=3,max=25"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=3,max=25"`
+	Name     string `json:"name" validate:"required,min=3,max=25"`
 }
 
 type ForgotPasswordForm struct {
-	Email     string `json:"email" validate:"required,email"`
+	Email string `json:"email" validate:"required,email"`
 }
 
 type ResetPasswordForm struct {
-	Password  string `json:"password" validate:"required,min=3,max=25"`
-	Token     string `json:"token" validate:"required"`
+	Password string `json:"password" validate:"required,min=3,max=25"`
+	Token    string `json:"token" validate:"required"`
 }
 
 type ConfirmRegistrationForm struct {
-	Token     string `json:"token" validate:"required"`
+	Token string `json:"token" validate:"required"`
 }
 
 func ValidateUserLogin(ctx echo.Context) (LoginForm, map[string]string) {

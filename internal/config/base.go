@@ -19,6 +19,7 @@ type Config struct {
 	FlutterAndroidAppID string `config:"flutter-android-app-id;default=id"`
 	MongoDB             config.MongoConfigs
 	CAFile              string `config:"ca-file;required"`
+	RSAPublicKey        string `config:"rsa-public-key;required"`
 }
 
 func (c *Config) ApplicationAddress() string {

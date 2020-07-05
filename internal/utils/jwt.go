@@ -53,7 +53,7 @@ func ValidateToken(ctx echo.Context, token, secret string) (models.User, error) 
 		return models.User{}, err
 	}
 
-	if float64(time.Now().Unix()) - (decoded["expiration"].(float64)) > 0 {
+	if float64(time.Now().Unix())-(decoded["expiration"].(float64)) > 0 {
 		return models.User{}, errors.New("expired token")
 	}
 

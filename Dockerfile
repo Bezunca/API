@@ -2,7 +2,7 @@
 # --- Project Name ---
 ARG PROJECT_NAME="bezuncapi"
 
-# --- Create user ---
+# --- Create auth ---
 ARG USERNAME="bezunca"
 
 # === Stage 1 - Build go project ===========================================
@@ -75,7 +75,7 @@ COPY . .
 RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o "executable" ./cmd/${PROJECT_NAME}
 #&& upx --best --ultra-brute ${PROJECT_NAME}
 
-# Fix permissions and create unprivileged user
+# Fix permissions and create unprivileged auth
 RUN useradd -b /home -s /bin/sh -u 1001 -g 65534 ${USERNAME} \
     && \
     # Setup data volumes directories
@@ -92,7 +92,7 @@ ARG USERNAME
 # Copy project data
 COPY --from=builder /src/proj/executable /usr/local/bin
 
-# Import the user and group files from the builder.
+# Import the auth and group files from the builder.
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /home/  /home/

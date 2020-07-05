@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"github.com/Nhanderu/brdoc"
 	"github.com/go-playground/locales"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -11,9 +12,10 @@ type Translations struct {
 	tag             string
 	customRegisFunc validator.RegisterTranslationsFunc
 	customTransFunc validator.TranslationFunc
+	customValidFunc validator.Func
 }
 
-func RegisterCustomTranslations(v *validator.Validate, trans ut.Translator) {
+func RegisterCustomValidations(v *validator.Validate, trans ut.Translator) {
 
 	translations := []Translations{
 		{
@@ -64,10 +66,25 @@ func RegisterCustomTranslations(v *validator.Validate, trans ut.Translator) {
 				return t
 			},
 		},
-
+		{
+			tag: "cpf",
+			customRegisFunc: func(ut ut.Translator) error {
+				return ut.Add("cpf", "CPF inválido", false)
+			},
+			customTransFunc: func(ut ut.Translator, fe validator.FieldError) string {
+				t, _ := ut.T("cpf", fe.Field())
+				return t
+			},
+			customValidFunc: func(fl validator.FieldLevel) bool {
+				return brdoc.IsCPF(fl.Field().String())
+			},
+		},
 	}
 
 	for _, t := range translations {
+		if t.customValidFunc != nil {
+			_ = v.RegisterValidation(t.tag, t.customValidFunc)
+		}
 		_ = v.RegisterTranslation(t.tag, trans, t.customRegisFunc, t.customTransFunc)
 	}
 }

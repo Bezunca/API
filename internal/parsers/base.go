@@ -47,5 +47,3 @@ func ParseBool(data map[string]interface{}, fieldName string) (bool, bool) {
 
 	return fieldBool, true
 }
-
-

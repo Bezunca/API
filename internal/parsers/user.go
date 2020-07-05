@@ -34,8 +34,8 @@ func ParseAuthCredentials(data map[string]interface{}) (models.AuthCredentials, 
 	}
 
 	return models.AuthCredentials{
-		Email:    email,
-		Password: password,
+		Email:     email,
+		Password:  password,
 		Activated: activated,
 	}, true
 }

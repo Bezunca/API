@@ -23,7 +23,7 @@ func GetUserByEmail(ctx echo.Context, email string) (models.User, error) {
 	users := usersInterface.([]models.User)
 
 	if len(users) == 0 {
-		return models.User{}, errors.New("user not found")
+		return models.User{}, errors.New("auth not found")
 	}
 
 	return users[0], nil

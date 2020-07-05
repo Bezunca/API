@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"bezuncapi/internal/database"
@@ -27,8 +27,8 @@ func UpdateUserRegisterConfirmation(ctx echo.Context, email string) bool {
 	filter := bson.M{"auth_credentials.email": email}
 	update := bson.D{
 		{"$set", bson.D{
-				{"auth_credentials.activated", true},
-			},
+			{"auth_credentials.activated", true},
+		},
 		},
 	}
 

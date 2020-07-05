@@ -5,9 +5,10 @@ import (
 )
 
 type User struct {
-	ID              primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	Name            string             `bson:"name" json:"name"`
-	AuthCredentials AuthCredentials    `bson:"auth_credentials" json:"auth_credentials"`
+	ID                 primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name               string             `bson:"name" json:"name"`
+	AuthCredentials    AuthCredentials    `bson:"auth_credentials" json:"auth_credentials"`
+	WalletsCredentials WalletCredentials  `bson:"wallets_credentials" json:"wallets_credentials"`
 }
 
 type AuthCredentials struct {

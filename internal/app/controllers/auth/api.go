@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"bezuncapi/internal/config"
@@ -33,7 +33,7 @@ func Register(ctx echo.Context) error {
 	user := models.User{
 		Name: registrationForm.Name,
 		AuthCredentials: models.AuthCredentials{
-			Email: registrationForm.Email,
+			Email:    registrationForm.Email,
 			Password: string(hashPassword),
 		},
 	}
@@ -139,13 +139,13 @@ func Login(ctx echo.Context) error {
 
 	user, err := database.GetUserByEmail(ctx, loginForm.Email)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Emaill ou senha incorretos"}})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Credenciais inválidas"}})
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.AuthCredentials.Password), []byte(loginForm.Password))
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Email ou senha incorretos"}})
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Credenciais inválidas"}})
 	}
 
 	if !user.AuthCredentials.Activated {
