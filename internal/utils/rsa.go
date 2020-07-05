@@ -34,7 +34,7 @@ func RSAEncript(message, label string) (string, error) {
 
 	configs := config.Get()
 
-	publicKey, err := loadPublicKey(configs.RSAPublicKey)
+	publicKey, err := loadPublicKey(configs.RSAPublicKeyPath)
 	if err != nil {
 		return "", err
 	}

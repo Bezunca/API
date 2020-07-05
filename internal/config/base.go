@@ -18,8 +18,8 @@ type Config struct {
 	DynamicLink         string `config:"dynamic-link;default=dynamic"`
 	FlutterAndroidAppID string `config:"flutter-android-app-id;default=id"`
 	MongoDB             config.MongoConfigs
-	CAFile              string `config:"ca-file;required"`
-	RSAPublicKey        string `config:"rsa-public-key;required"`
+	CAFilePath          string `config:"ca-file-path;required"`
+	RSAPublicKeyPath    string `config:"rsa-public-key-path;required"`
 }
 
 func (c *Config) ApplicationAddress() string {
