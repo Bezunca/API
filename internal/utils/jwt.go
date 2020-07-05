@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-var AuthExpiration = time.Now().Add(time.Hour * 24 * 7).Unix()
-var EmailExpiration = time.Now().Add(time.Hour * 24).Unix()
+var AuthExpiration = time.Hour * 24 * 7
+var EmailExpiration = time.Hour * 24
 
 func CreateToken(user models.User, expiration int64, secretKey string) (string, error) {
 

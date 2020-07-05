@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"time"
 )
 
 func Register(ctx echo.Context) error {
@@ -67,7 +68,8 @@ func ConfirmRegistration(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao ativar conta"}})
 	}
 
-	token, err := utils.CreateToken(user, utils.AuthExpiration, configs.JWTSecretAuth)
+	tokenExpiration := time.Now().Add(utils.AuthExpiration).Unix()
+	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretAuth)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
 	}
@@ -143,7 +145,8 @@ func Login(ctx echo.Context) error {
 	}
 
 	configs := config.Get()
-	token, err := utils.CreateToken(user, utils.AuthExpiration, configs.JWTSecretAuth)
+	tokenExpiration := time.Now().Add(utils.AuthExpiration).Unix()
+	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretAuth)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
 	}

@@ -5,6 +5,7 @@ import (
 	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
 	"net/url"
+	"time"
 )
 
 func generateDynamicLink(configs *config.Config, params map[string]string) string {
@@ -23,7 +24,8 @@ func generateDynamicLink(configs *config.Config, params map[string]string) strin
 func sendRegisterEmail(user models.User) error {
 
 	configs := config.Get()
-	token, err := utils.CreateToken(user, utils.EmailExpiration, configs.JWTSecretEmail)
+	tokenExpiration := time.Now().Add(utils.EmailExpiration).Unix()
+	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretEmail)
 	if err != nil {
 		return err
 	}
@@ -49,7 +51,8 @@ func sendRegisterEmail(user models.User) error {
 func sendForgotPasswordEmail(user models.User) error {
 
 	configs := config.Get()
-	token, err := utils.CreateToken(user, utils.EmailExpiration, configs.JWTSecretEmail)
+	tokenExpiration := time.Now().Add(utils.EmailExpiration).Unix()
+	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretEmail)
 	if err != nil {
 		return err
 	}
