@@ -164,5 +164,10 @@ func Login(ctx echo.Context) error {
 }
 
 func Info(ctx echo.Context, user models.User) error {
-	return ctx.JSON(http.StatusOK, user)
+
+	appInfo := models.AppInfo{
+		Cei: user.WalletsCredentials.Cei.User != "",
+	}
+
+	return ctx.JSON(http.StatusOK, appInfo)
 }
