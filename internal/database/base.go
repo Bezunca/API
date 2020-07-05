@@ -52,12 +52,13 @@ func FindDocuments(ctx echo.Context, database, collection string, filter bson.M,
 
 	cursor, err := queryCollection.Find(queryCtx, filter, findOptions)
 	if err != nil {
-		return nil, errors.New("collection not found")
+		ctx.Logger().Error(err)
+		return nil, err
 	}
 
 	data, ok := parser(cursor)
 	if !ok {
-		return nil, errors.New("cant decode data of collection")
+		return nil, errors.New("error parsing data")
 	}
 
 	return data, nil
@@ -71,6 +72,7 @@ func InsertDocuments(ctx echo.Context, database, collection string, documents []
 
 	_, err := queryCollection.InsertMany(queryCtx, documents)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return false
 	}
 
@@ -85,6 +87,7 @@ func UpdateDocuments(ctx echo.Context, database, collection string, filter bson.
 
 	_, err := queryCollection.UpdateMany(queryCtx, filter, update)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return false
 	}
 

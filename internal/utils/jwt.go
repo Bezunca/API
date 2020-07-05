@@ -45,7 +45,7 @@ func ValidateToken(ctx echo.Context, token, secret string) (models.User, error) 
 	}
 
 	if decoded["user_email"] == nil || decoded["expiration"] == nil {
-		return models.User{}, errors.New("token inválido")
+		return models.User{}, errors.New("invalid token")
 	}
 
 	userObj, err := database.GetUserByEmail(ctx, decoded["user_email"].(string))
@@ -54,7 +54,7 @@ func ValidateToken(ctx echo.Context, token, secret string) (models.User, error) 
 	}
 
 	if float64(time.Now().Unix()) - (decoded["expiration"].(float64)) > 0 {
-		return models.User{}, err
+		return models.User{}, errors.New("expired token")
 	}
 
 	return userObj, nil

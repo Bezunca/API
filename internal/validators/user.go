@@ -52,6 +52,7 @@ func ValidateUserRegister(ctx echo.Context) (RegistrationForm, map[string]string
 
 	registrationForm := RegistrationForm{}
 	if err := ctx.Bind(&registrationForm); err != nil {
+		ctx.Logger().Error(err)
 		return RegistrationForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 
@@ -67,6 +68,7 @@ func ValidateUserForgotPassword(ctx echo.Context) (ForgotPasswordForm, map[strin
 
 	forgotPasswordForm := ForgotPasswordForm{}
 	if err := ctx.Bind(&forgotPasswordForm); err != nil {
+		ctx.Logger().Error(err)
 		return ForgotPasswordForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 	err := ValidateStruct(forgotPasswordForm)
@@ -81,6 +83,7 @@ func ValidateUserResetPassword(ctx echo.Context) (ResetPasswordForm, map[string]
 
 	resetPasswordForm := ResetPasswordForm{}
 	if err := ctx.Bind(&resetPasswordForm); err != nil {
+		ctx.Logger().Error(err)
 		return ResetPasswordForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 
@@ -96,6 +99,7 @@ func ValidateUserConfirmRegistration(ctx echo.Context) (ConfirmRegistrationForm,
 
 	confirmRegistrationForm := ConfirmRegistrationForm{}
 	if err := ctx.Bind(&confirmRegistrationForm); err != nil {
+		ctx.Logger().Error(err)
 		return ConfirmRegistrationForm{}, map[string]string{"general": "Formulário inválido"}
 	}
 	err := ValidateStruct(confirmRegistrationForm)

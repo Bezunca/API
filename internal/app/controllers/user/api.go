@@ -26,6 +26,7 @@ func Register(ctx echo.Context) error {
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(registrationForm.Password), bcrypt.MinCost)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao encriptar senha"}})
 	}
 
@@ -44,6 +45,7 @@ func Register(ctx echo.Context) error {
 
 	err = sendRegisterEmail(user)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao enviar email de confirmação"}})
 	}
 
@@ -60,6 +62,7 @@ func ConfirmRegistration(ctx echo.Context) error {
 	configs := config.Get()
 	user, err := utils.ValidateToken(ctx, confirmRegistrationForm.Token, configs.JWTSecretEmail)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 	}
 
@@ -71,6 +74,7 @@ func ConfirmRegistration(ctx echo.Context) error {
 	tokenExpiration := time.Now().Add(utils.AuthExpiration).Unix()
 	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretAuth)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
 	}
 
@@ -91,6 +95,7 @@ func ForgotPassword(ctx echo.Context) error {
 
 	err = sendForgotPasswordEmail(user)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao enviar email de redefinição"}})
 	}
 
@@ -107,11 +112,13 @@ func ResetPassword(ctx echo.Context) error {
 	configs := config.Get()
 	user, err := utils.ValidateToken(ctx, resetPasswordForm.Token, configs.JWTSecretEmail)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
 	}
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(resetPasswordForm.Password), bcrypt.MinCost)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao encriptar senha"}})
 	}
 
@@ -137,6 +144,7 @@ func Login(ctx echo.Context) error {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.AuthCredentials.Password), []byte(loginForm.Password))
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Email ou senha incorretos"}})
 	}
 
@@ -148,6 +156,7 @@ func Login(ctx echo.Context) error {
 	tokenExpiration := time.Now().Add(utils.AuthExpiration).Unix()
 	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretAuth)
 	if err != nil {
+		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
 	}
 
