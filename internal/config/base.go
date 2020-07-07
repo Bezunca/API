@@ -2,6 +2,7 @@ package config
 
 import (
 	"strings"
+	"time"
 
 	"github.com/Bezunca/mongo_connection/config"
 
@@ -37,6 +38,9 @@ type (
 		CAFilePath          string `config:"ca-file-path;required"`
 		RSAPublicKeyPath    string `config:"rsa-public-key-path;required"`
 
+		// B3 Fetch Prices Stuff
+		B3CacheTimeout time.Duration `config:"b3-cache-timeout;default=10m"`
+
 		JWT     jwt
 		MongoDB config.MongoConfigs
 		ACME    acme
@@ -49,12 +53,17 @@ func (c *Config) ApplicationAddress() string {
 
 var globalConfig *Config = nil
 
-func New(log echo.Logger) *Config {
+func New(log echo.Logger, notifyCallbacks ...func()) *Config {
 	if globalConfig == nil {
 		globalConfig = new(Config)
 		if err := openvvar.Load(globalConfig); err != nil {
 			log.Fatalf("An error occurred for bad config reasons: %v", err)
 		}
+	}
+
+	// In this way we can notify the functions using the configs that the configs are ready
+	for _, callback := range notifyCallbacks {
+		callback()
 	}
 
 	return globalConfig

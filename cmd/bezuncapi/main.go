@@ -2,6 +2,7 @@ package main
 
 import (
 	"bezuncapi/internal/app"
+	"bezuncapi/internal/app/controllers/b3"
 	"bezuncapi/internal/config"
 	"context"
 	"crypto/tls"
@@ -25,7 +26,7 @@ func main() {
 	e := echo.New()
 
 	// Application configs
-	configs := config.New(e.Logger)
+	configs := config.New(e.Logger, b3.SetFetcher)
 
 	// Certificate Authority Stuff
 	caFileBytes, err := ioutil.ReadFile(configs.CAFilePath)

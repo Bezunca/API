@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/99designs/gqlgen v0.11.3
+	github.com/Bezunca/b3lib v0.0.3
 	github.com/Bezunca/ceilib v0.0.10
 	github.com/Bezunca/mongo_connection v0.0.1
 	github.com/Nhanderu/brdoc v1.1.2
