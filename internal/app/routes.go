@@ -3,10 +3,10 @@ package app
 import (
 	"bezuncapi/internal/app/controllers/auth"
 	"bezuncapi/internal/app/controllers/b3"
-	"bezuncapi/internal/app/controllers/cei"
 	"bezuncapi/internal/app/controllers/wallet"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // Routes function setups routes in echo instance
@@ -15,12 +15,6 @@ func Routes(router *echo.Router) {
 
 	// B3 stuff
 	router.Add(http.MethodGet, "/fetch_latest_prices", b3.FetchLatestPrices)
-
-	// CEI stuff
-	router.Add(http.MethodGet, "/user_trades", cei.UserTrades)
-	router.Add(http.MethodGet, "/user_portfolio_from_trades", cei.UserPortfolioFromTrades)
-	router.Add(http.MethodGet, "/user_dividends", cei.UserDividends)
-	router.Add(http.MethodGet, "/user_portfolio", cei.UserPortfolio)
 
 	// Auth
 	router.Add(http.MethodPost, "/auth/register", auth.Register)

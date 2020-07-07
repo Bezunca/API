@@ -25,7 +25,7 @@ func sendRegisterEmail(user models.User) error {
 
 	configs := config.Get()
 	tokenExpiration := time.Now().Add(utils.EmailExpiration).Unix()
-	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretEmail)
+	token, err := utils.CreateToken(user, tokenExpiration, configs.JWT.SecretEmail)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func sendForgotPasswordEmail(user models.User) error {
 
 	configs := config.Get()
 	tokenExpiration := time.Now().Add(utils.EmailExpiration).Unix()
-	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretEmail)
+	token, err := utils.CreateToken(user, tokenExpiration, configs.JWT.SecretEmail)
 	if err != nil {
 		return err
 	}

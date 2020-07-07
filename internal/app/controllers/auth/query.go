@@ -3,6 +3,7 @@ package auth
 import (
 	"bezuncapi/internal/database"
 	"bezuncapi/internal/models"
+
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -26,8 +27,8 @@ func UpdateUserRegisterConfirmation(ctx echo.Context, email string) bool {
 
 	filter := bson.M{"auth_credentials.email": email}
 	update := bson.D{
-		{"$set", bson.D{
-			{"auth_credentials.activated", true},
+		{Key: "$set", Value: bson.D{
+			{Key: "auth_credentials.activated", Value: true},
 		},
 		},
 	}

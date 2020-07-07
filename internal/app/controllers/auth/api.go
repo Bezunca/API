@@ -6,10 +6,11 @@ import (
 	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
 	"bezuncapi/internal/validators"
-	"github.com/labstack/echo/v4"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
+
+	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Register(ctx echo.Context) error {
@@ -60,7 +61,7 @@ func ConfirmRegistration(ctx echo.Context) error {
 	}
 
 	configs := config.Get()
-	user, err := utils.ValidateToken(ctx, confirmRegistrationForm.Token, configs.JWTSecretEmail)
+	user, err := utils.ValidateToken(ctx, confirmRegistrationForm.Token, configs.JWT.SecretEmail)
 	if err != nil {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
@@ -72,7 +73,7 @@ func ConfirmRegistration(ctx echo.Context) error {
 	}
 
 	tokenExpiration := time.Now().Add(utils.AuthExpiration).Unix()
-	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretAuth)
+	token, err := utils.CreateToken(user, tokenExpiration, configs.JWT.SecretAuth)
 	if err != nil {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
@@ -110,7 +111,7 @@ func ResetPassword(ctx echo.Context) error {
 	}
 
 	configs := config.Get()
-	user, err := utils.ValidateToken(ctx, resetPasswordForm.Token, configs.JWTSecretEmail)
+	user, err := utils.ValidateToken(ctx, resetPasswordForm.Token, configs.JWT.SecretEmail)
 	if err != nil {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Token inválido"}})
@@ -154,7 +155,7 @@ func Login(ctx echo.Context) error {
 
 	configs := config.Get()
 	tokenExpiration := time.Now().Add(utils.AuthExpiration).Unix()
-	token, err := utils.CreateToken(user, tokenExpiration, configs.JWTSecretAuth)
+	token, err := utils.CreateToken(user, tokenExpiration, configs.JWT.SecretAuth)
 	if err != nil {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao gerar token de autenticação"}})
