@@ -69,6 +69,9 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
+	// Pre Middleware
+	app.PreMiddleware(e)
+
 	// Middleware
 	app.Middleware(e)
 

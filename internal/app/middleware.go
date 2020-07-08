@@ -16,6 +16,17 @@ func Middleware(e *echo.Echo) {
 	e.Use(middleware.Recover())
 }
 
+// PreMiddleware registers echo's Pre Middleware
+func PreMiddleware(e *echo.Echo) {
+	if !config.Get().ACME.UseTLS {
+		e.Pre(middleware.HTTPSRedirect())
+	}
+
+	e.Pre(
+		middleware.AddTrailingSlash(),
+	)
+}
+
 func UserAuth(next func(ctx echo.Context, user models.User) error) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 
