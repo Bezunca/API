@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
@@ -15,7 +16,7 @@ var EmailExpiration = time.Hour * 24
 func CreateToken(user models.User, expiration int64, secretKey string) (string, error) {
 
 	atClaims := jwt.MapClaims{}
-	atClaims["user_email"] = user.AuthCredentials.Email
+	atClaims["user_id"] = (user.ID).Hex()
 	atClaims["expiration"] = expiration
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -44,11 +45,16 @@ func ValidateToken(ctx echo.Context, token, secret string) (models.User, error) 
 		return models.User{}, err
 	}
 
-	if decoded["user_email"] == nil || decoded["expiration"] == nil {
+	if decoded["user_id"] == nil || decoded["expiration"] == nil {
 		return models.User{}, errors.New("invalid token")
 	}
 
-	userObj, err := database.GetUserByEmail(ctx, decoded["user_email"].(string))
+	userId, err := primitive.ObjectIDFromHex(decoded["user_id"].(string))
+	if err != nil {
+		return models.User{}, errors.New("invalid token")
+	}
+
+	userObj, err := database.GetUserByID(ctx, userId)
 	if err != nil {
 		return models.User{}, err
 	}
