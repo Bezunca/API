@@ -1,34 +1,56 @@
 package app
 
 import (
+	echoContext "bezuncapi/internal/app/context"
 	"bezuncapi/internal/app/controllers/auth"
 	"bezuncapi/internal/app/controllers/b3"
 	"bezuncapi/internal/app/controllers/wallet"
+	"bezuncapi/internal/app/middleware"
+	"bezuncapi/internal/graph"
+	"bezuncapi/internal/graph/generated"
+	"context"
 	"net/http"
+
+	"github.com/99designs/gqlgen/graphql/handler"
 
 	"github.com/labstack/echo/v4"
 )
 
 // Routes function setups routes in echo instance
-func Routes(router *echo.Router) {
-	router.Add(http.MethodGet, "/", hello)
+func Routes(echo *echo.Echo) {
+	echo.GET( "/", hello)
 
 	// B3 stuff
-	router.Add(http.MethodGet, "/fetch_latest_prices", b3.FetchLatestPrices)
+	echo.GET( "/fetch_latest_prices", b3.FetchLatestPrices)
 
 	// Auth
-	router.Add(http.MethodPost, "/auth/register", auth.Register)
-	router.Add(http.MethodPost, "/auth/confirm_registration", auth.ConfirmRegistration)
-	router.Add(http.MethodPost, "/auth/forgot_password", auth.ForgotPassword)
-	router.Add(http.MethodPost, "/auth/reset_password", auth.ResetPassword)
-	router.Add(http.MethodPost, "/auth/login", auth.Login)
-	router.Add(http.MethodGet, "/auth/info", UserAuth(auth.Info))
+	echo.POST( "/auth/register", auth.Register)
+	echo.POST( "/auth/confirm_registration", auth.ConfirmRegistration)
+	echo.POST( "/auth/forgot_password", auth.ForgotPassword)
+	echo.POST( "/auth/reset_password", auth.ResetPassword)
+	echo.POST( "/auth/login", auth.Login)
 
-	// Wallets
-	router.Add(http.MethodPost, "/wallet/cei_sync", UserAuth(wallet.CEISync))
+	loggedRoutes := echo.Group("/", middleware.UserAuth)
+	loggedRoutes.GET( "/auth/info", auth.Info)
+	loggedRoutes.POST( "/wallet/cei_sync", wallet.CEISync)
+	loggedRoutes.POST( "/query", graphqlHandler)
 }
 
 // Placeholder Handler
 func hello(ctx echo.Context) error {
 	return ctx.String(http.StatusOK, "Hello, World!")
+}
+
+// GraphQL Handler
+func graphqlHandler(c echo.Context) error {
+	ctx := c.(*echoContext.BezuncAPIContext)
+	user := ctx.User()
+
+	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+
+	h.ServeHTTP(
+		c.Response(),
+		ctx.Request().WithContext(context.WithValue(ctx.Request().Context(), "user", user)),
+	)
+	return nil
 }

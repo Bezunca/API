@@ -1,6 +1,7 @@
 package wallet
 
 import (
+	"bezuncapi/internal/app/context"
 	"bezuncapi/internal/models"
 	"bezuncapi/internal/utils"
 	"bezuncapi/internal/validators"
@@ -9,7 +10,9 @@ import (
 	"net/http"
 )
 
-func CEISync(ctx echo.Context, user models.User) error {
+func CEISync(c echo.Context) error {
+	ctx := c.(*context.BezuncAPIContext)
+	user := ctx.User()
 
 	ceiSyncFrom, validationErrors := validators.ValidateCEISync(ctx)
 	if validationErrors != nil {

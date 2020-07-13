@@ -3,6 +3,7 @@ package main
 import (
 	"bezuncapi/internal/app"
 	"bezuncapi/internal/app/controllers/b3"
+	"bezuncapi/internal/app/middleware"
 	"bezuncapi/internal/config"
 	"context"
 	"crypto/tls"
@@ -70,13 +71,13 @@ func main() {
 	}
 
 	// Pre Middleware
-	app.PreMiddleware(e)
+	middleware.PreMiddleware(e)
 
 	// Middleware
-	app.Middleware(e)
+	middleware.Middleware(e)
 
 	// Routes
-	app.Routes(e.Router())
+	app.Routes(e)
 
 	if configs.Debug {
 		e.Logger.SetLevel(log.DEBUG)

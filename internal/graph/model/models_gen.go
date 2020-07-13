@@ -2,19 +2,21 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type AuthCredentials struct {
+	Email     string `json:"email" bson:"email"`
+	Activated bool   `json:"activated" bson:"activated"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type Cei struct {
+	User string `json:"user" bson:"user"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	Name               string              `json:"name" bson:"name"`
+	AuthCredentials    *AuthCredentials    `json:"auth_credentials" bson:"auth_credentials"`
+	WalletsCredentials *WalletsCredentials `json:"wallets_credentials" bson:"wallets_credentials"`
+}
+
+type WalletsCredentials struct {
+	Cei *Cei `json:"cei" bson:"cei"`
 }

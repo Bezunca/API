@@ -1,0 +1,23 @@
+
+type AuthCredentials {
+  email: String!
+  activated: Boolean!
+}
+
+type CEI {
+  user: String!
+}
+
+type WalletsCredentials {
+  cei: CEI!
+}
+
+type User {
+  name: String!
+  auth_credentials: AuthCredentials!
+  wallets_credentials: WalletsCredentials!
+}
+
+type Query {
+  user(name: String!): User!
+}
