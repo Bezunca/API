@@ -28,6 +28,7 @@ RUN apt-get update -qq \
         upx \
         build-essential \
         openssh-client \
+        ca-certificates \
     && \
     git config --global url."git@github.com:".insteadOf "https://github.com/"
 
@@ -72,8 +73,9 @@ RUN go mod download
 COPY . .
 
 # Building project executable, cleaning useless stuff and compressing binary
-RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o "executable" ./cmd/${PROJECT_NAME}
-#&& upx --best --ultra-brute ${PROJECT_NAME}
+RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o "executable" ./cmd/${PROJECT_NAME} \
+    && \
+    upx --best --ultra-brute "executable"
 
 # Fix permissions and create unprivileged auth
 RUN useradd -b /home -s /bin/sh -u 1001 -g 65534 ${USERNAME} \
@@ -85,7 +87,7 @@ RUN useradd -b /home -s /bin/sh -u 1001 -g 65534 ${USERNAME} \
     find / -perm /6000 -type f -exec chmod a-s {} \; || true
 
 # === Stage 2 - Setup runtime ==================================================
-FROM ubuntu
+FROM scratch
 ARG PROJECT_NAME
 ARG USERNAME
 
@@ -96,13 +98,7 @@ COPY --from=builder /src/proj/executable /usr/local/bin
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /home/  /home/
-
-############################# Certificate authority fix ######################################
-# TODO: Findout what curl does that fixes sendgrid's ca certificate validation work
-ENV DEBIAN_FRONTEND=noninteractive
-ADD "https://gist.githubusercontent.com/HeavenVolkoff/ff7b77b9087f956b8df944772e93c071/raw" /etc/apt/apt.conf.d/99custom
-RUN apt-get update -qq && apt-get install curl
-##############################################################################################
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 # Setup runtime
 USER ${USERNAME}
