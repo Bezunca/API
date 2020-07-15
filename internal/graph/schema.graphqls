@@ -1,0 +1,62 @@
+scalar Time
+scalar ObjectID
+
+type PortfolioItem {
+  symbol: String!
+  market: String!
+  amount: Int!
+  average_price: Int!
+}
+
+type PortfolioBody {
+  data: PortfolioItem!
+  user_id: ObjectID!
+}
+
+type Trade {
+  date: Time!
+  action: String!
+  expiration: String!
+  symbol: String!
+  amount: Int!
+  price: Int!
+  full_price: Int!
+  price_factor: Int!
+}
+
+type TradeBody {
+  data: Trade!
+  user_id: ObjectID!
+}
+
+
+type Dividend {
+  date: Time!
+  symbol: String!
+  type: String!
+  base_quantity: Int!
+  price_factor: Int!
+  gross_income: Int!
+  net_income: Int!
+}
+
+type DividendBody {
+  data: Dividend!
+  user_id: ObjectID!
+}
+
+type HistoricalPrice {
+  date: Time!
+  symbol: String!
+  type: String!
+  base_quantity: Int!
+  price_factor: Int!
+  gross_income: Int!
+  net_income: Int!
+}
+
+type Query {
+  portfolio: [PortfolioItem]!
+  trades: [Trade]!
+  dividends: [Dividend]!
+}

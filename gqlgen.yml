@@ -56,5 +56,3 @@ models:
       - github.com/99designs/gqlgen/graphql.Int32
   ObjectID:
     model: github.com/Bezunca/API/custom_scalars.ObjectID
-  DateTime:
-    model: github.com/Bezunca/API/custom_scalars.DateTime

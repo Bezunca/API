@@ -45,17 +45,37 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
-	AuthCredentials struct {
-		Activated func(childComplexity int) int
-		Email     func(childComplexity int) int
+	Dividend struct {
+		BaseQuantity func(childComplexity int) int
+		Date         func(childComplexity int) int
+		GrossIncome  func(childComplexity int) int
+		NetIncome    func(childComplexity int) int
+		PriceFactor  func(childComplexity int) int
+		Symbol       func(childComplexity int) int
+		Type         func(childComplexity int) int
 	}
 
-	Cei struct {
-		User func(childComplexity int) int
+	DividendBody struct {
+		Data   func(childComplexity int) int
+		UserID func(childComplexity int) int
+	}
+
+	PortfolioBody struct {
+		Data   func(childComplexity int) int
+		UserID func(childComplexity int) int
+	}
+
+	PortfolioItem struct {
+		Amount       func(childComplexity int) int
+		AveragePrice func(childComplexity int) int
+		Market       func(childComplexity int) int
+		Symbol       func(childComplexity int) int
 	}
 
 	Query struct {
-		User func(childComplexity int) int
+		Dividends func(childComplexity int) int
+		Portfolio func(childComplexity int) int
+		Trades    func(childComplexity int) int
 	}
 
 	Trade struct {
@@ -67,22 +87,18 @@ type ComplexityRoot struct {
 		Price       func(childComplexity int) int
 		PriceFactor func(childComplexity int) int
 		Symbol      func(childComplexity int) int
-		UserID      func(childComplexity int) int
 	}
 
-	User struct {
-		AuthCredentials    func(childComplexity int) int
-		Name               func(childComplexity int) int
-		WalletsCredentials func(childComplexity int) int
-	}
-
-	WalletsCredentials struct {
-		Cei func(childComplexity int) int
+	TradeBody struct {
+		Data   func(childComplexity int) int
+		UserID func(childComplexity int) int
 	}
 }
 
 type QueryResolver interface {
-	User(ctx context.Context) (*model.User, error)
+	Portfolio(ctx context.Context) ([]*model.PortfolioItem, error)
+	Trades(ctx context.Context) ([]*model.Trade, error)
+	Dividends(ctx context.Context) ([]*model.Dividend, error)
 }
 
 type executableSchema struct {
@@ -100,33 +116,131 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "AuthCredentials.activated":
-		if e.complexity.AuthCredentials.Activated == nil {
+	case "Dividend.base_quantity":
+		if e.complexity.Dividend.BaseQuantity == nil {
 			break
 		}
 
-		return e.complexity.AuthCredentials.Activated(childComplexity), true
+		return e.complexity.Dividend.BaseQuantity(childComplexity), true
 
-	case "AuthCredentials.email":
-		if e.complexity.AuthCredentials.Email == nil {
+	case "Dividend.date":
+		if e.complexity.Dividend.Date == nil {
 			break
 		}
 
-		return e.complexity.AuthCredentials.Email(childComplexity), true
+		return e.complexity.Dividend.Date(childComplexity), true
 
-	case "CEI.user":
-		if e.complexity.Cei.User == nil {
+	case "Dividend.gross_income":
+		if e.complexity.Dividend.GrossIncome == nil {
 			break
 		}
 
-		return e.complexity.Cei.User(childComplexity), true
+		return e.complexity.Dividend.GrossIncome(childComplexity), true
 
-	case "Query.user":
-		if e.complexity.Query.User == nil {
+	case "Dividend.net_income":
+		if e.complexity.Dividend.NetIncome == nil {
 			break
 		}
 
-		return e.complexity.Query.User(childComplexity), true
+		return e.complexity.Dividend.NetIncome(childComplexity), true
+
+	case "Dividend.price_factor":
+		if e.complexity.Dividend.PriceFactor == nil {
+			break
+		}
+
+		return e.complexity.Dividend.PriceFactor(childComplexity), true
+
+	case "Dividend.symbol":
+		if e.complexity.Dividend.Symbol == nil {
+			break
+		}
+
+		return e.complexity.Dividend.Symbol(childComplexity), true
+
+	case "Dividend.type":
+		if e.complexity.Dividend.Type == nil {
+			break
+		}
+
+		return e.complexity.Dividend.Type(childComplexity), true
+
+	case "DividendBody.data":
+		if e.complexity.DividendBody.Data == nil {
+			break
+		}
+
+		return e.complexity.DividendBody.Data(childComplexity), true
+
+	case "DividendBody.user_id":
+		if e.complexity.DividendBody.UserID == nil {
+			break
+		}
+
+		return e.complexity.DividendBody.UserID(childComplexity), true
+
+	case "PortfolioBody.data":
+		if e.complexity.PortfolioBody.Data == nil {
+			break
+		}
+
+		return e.complexity.PortfolioBody.Data(childComplexity), true
+
+	case "PortfolioBody.user_id":
+		if e.complexity.PortfolioBody.UserID == nil {
+			break
+		}
+
+		return e.complexity.PortfolioBody.UserID(childComplexity), true
+
+	case "PortfolioItem.amount":
+		if e.complexity.PortfolioItem.Amount == nil {
+			break
+		}
+
+		return e.complexity.PortfolioItem.Amount(childComplexity), true
+
+	case "PortfolioItem.average_price":
+		if e.complexity.PortfolioItem.AveragePrice == nil {
+			break
+		}
+
+		return e.complexity.PortfolioItem.AveragePrice(childComplexity), true
+
+	case "PortfolioItem.market":
+		if e.complexity.PortfolioItem.Market == nil {
+			break
+		}
+
+		return e.complexity.PortfolioItem.Market(childComplexity), true
+
+	case "PortfolioItem.symbol":
+		if e.complexity.PortfolioItem.Symbol == nil {
+			break
+		}
+
+		return e.complexity.PortfolioItem.Symbol(childComplexity), true
+
+	case "Query.dividends":
+		if e.complexity.Query.Dividends == nil {
+			break
+		}
+
+		return e.complexity.Query.Dividends(childComplexity), true
+
+	case "Query.portfolio":
+		if e.complexity.Query.Portfolio == nil {
+			break
+		}
+
+		return e.complexity.Query.Portfolio(childComplexity), true
+
+	case "Query.trades":
+		if e.complexity.Query.Trades == nil {
+			break
+		}
+
+		return e.complexity.Query.Trades(childComplexity), true
 
 	case "Trade.action":
 		if e.complexity.Trade.Action == nil {
@@ -184,40 +298,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Trade.Symbol(childComplexity), true
 
-	case "Trade.user_id":
-		if e.complexity.Trade.UserID == nil {
+	case "TradeBody.data":
+		if e.complexity.TradeBody.Data == nil {
 			break
 		}
 
-		return e.complexity.Trade.UserID(childComplexity), true
+		return e.complexity.TradeBody.Data(childComplexity), true
 
-	case "User.auth_credentials":
-		if e.complexity.User.AuthCredentials == nil {
+	case "TradeBody.user_id":
+		if e.complexity.TradeBody.UserID == nil {
 			break
 		}
 
-		return e.complexity.User.AuthCredentials(childComplexity), true
-
-	case "User.name":
-		if e.complexity.User.Name == nil {
-			break
-		}
-
-		return e.complexity.User.Name(childComplexity), true
-
-	case "User.wallets_credentials":
-		if e.complexity.User.WalletsCredentials == nil {
-			break
-		}
-
-		return e.complexity.User.WalletsCredentials(childComplexity), true
-
-	case "WalletsCredentials.cei":
-		if e.complexity.WalletsCredentials.Cei == nil {
-			break
-		}
-
-		return e.complexity.WalletsCredentials.Cei(childComplexity), true
+		return e.complexity.TradeBody.UserID(childComplexity), true
 
 	}
 	return 0, false
@@ -269,34 +362,23 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	&ast.Source{Name: "internal/graph/user.graphqls", Input: `scalar DateTime
+	&ast.Source{Name: "internal/graph/schema.graphqls", Input: `scalar Time
 scalar ObjectID
 
-type AuthCredentials {
-  email: String!
-  activated: Boolean!
+type PortfolioItem {
+  symbol: String!
+  market: String!
+  amount: Int!
+  average_price: Int!
 }
 
-type CEI {
-  user: String!
-}
-
-type WalletsCredentials {
-  cei: CEI!
-}
-
-type User {
-  name: String!
-  auth_credentials: AuthCredentials!
-  wallets_credentials: WalletsCredentials!
-}
-
-type Query {
-  user: User!
+type PortfolioBody {
+  data: PortfolioItem!
+  user_id: ObjectID!
 }
 
 type Trade {
-  date: DateTime!
+  date: Time!
   action: String!
   expiration: String!
   symbol: String!
@@ -304,8 +386,35 @@ type Trade {
   price: Int!
   full_price: Int!
   price_factor: Int!
+}
+
+type TradeBody {
+  data: Trade!
   user_id: ObjectID!
-}`, BuiltIn: false},
+}
+
+
+type Dividend {
+  date: Time!
+  symbol: String!
+  type: String!
+  base_quantity: Int!
+  price_factor: Int!
+  gross_income: Int!
+  net_income: Int!
+}
+
+type DividendBody {
+  data: Dividend!
+  user_id: ObjectID!
+}
+
+type Query {
+  portfolio: [PortfolioItem]!
+  trades: [Trade]!
+  dividends: [Dividend]!
+}
+`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -363,7 +472,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _AuthCredentials_email(ctx context.Context, field graphql.CollectedField, obj *model.AuthCredentials) (ret graphql.Marshaler) {
+func (ec *executionContext) _Dividend_date(ctx context.Context, field graphql.CollectedField, obj *model.Dividend) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -371,7 +480,7 @@ func (ec *executionContext) _AuthCredentials_email(ctx context.Context, field gr
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "AuthCredentials",
+		Object:   "Dividend",
 		Field:    field,
 		Args:     nil,
 		IsMethod: false,
@@ -380,7 +489,41 @@ func (ec *executionContext) _AuthCredentials_email(ctx context.Context, field gr
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Email, nil
+		return obj.Date, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Dividend_symbol(ctx context.Context, field graphql.CollectedField, obj *model.Dividend) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Dividend",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Symbol, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -397,7 +540,7 @@ func (ec *executionContext) _AuthCredentials_email(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AuthCredentials_activated(ctx context.Context, field graphql.CollectedField, obj *model.AuthCredentials) (ret graphql.Marshaler) {
+func (ec *executionContext) _Dividend_type(ctx context.Context, field graphql.CollectedField, obj *model.Dividend) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -405,7 +548,7 @@ func (ec *executionContext) _AuthCredentials_activated(ctx context.Context, fiel
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "AuthCredentials",
+		Object:   "Dividend",
 		Field:    field,
 		Args:     nil,
 		IsMethod: false,
@@ -414,41 +557,7 @@ func (ec *executionContext) _AuthCredentials_activated(ctx context.Context, fiel
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Activated, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _CEI_user(ctx context.Context, field graphql.CollectedField, obj *model.Cei) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "CEI",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.User, nil
+		return obj.Type, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -465,7 +574,415 @@ func (ec *executionContext) _CEI_user(ctx context.Context, field graphql.Collect
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Dividend_base_quantity(ctx context.Context, field graphql.CollectedField, obj *model.Dividend) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Dividend",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BaseQuantity, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Dividend_price_factor(ctx context.Context, field graphql.CollectedField, obj *model.Dividend) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Dividend",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PriceFactor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Dividend_gross_income(ctx context.Context, field graphql.CollectedField, obj *model.Dividend) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Dividend",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.GrossIncome, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Dividend_net_income(ctx context.Context, field graphql.CollectedField, obj *model.Dividend) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Dividend",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NetIncome, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DividendBody_data(ctx context.Context, field graphql.CollectedField, obj *model.DividendBody) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "DividendBody",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Dividend)
+	fc.Result = res
+	return ec.marshalNDividend2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐDividend(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DividendBody_user_id(ctx context.Context, field graphql.CollectedField, obj *model.DividendBody) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "DividendBody",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(primitive.ObjectID)
+	fc.Result = res
+	return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PortfolioBody_data(ctx context.Context, field graphql.CollectedField, obj *model.PortfolioBody) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "PortfolioBody",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PortfolioItem)
+	fc.Result = res
+	return ec.marshalNPortfolioItem2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐPortfolioItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PortfolioBody_user_id(ctx context.Context, field graphql.CollectedField, obj *model.PortfolioBody) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "PortfolioBody",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(primitive.ObjectID)
+	fc.Result = res
+	return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PortfolioItem_symbol(ctx context.Context, field graphql.CollectedField, obj *model.PortfolioItem) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "PortfolioItem",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Symbol, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PortfolioItem_market(ctx context.Context, field graphql.CollectedField, obj *model.PortfolioItem) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "PortfolioItem",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Market, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PortfolioItem_amount(ctx context.Context, field graphql.CollectedField, obj *model.PortfolioItem) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "PortfolioItem",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Amount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _PortfolioItem_average_price(ctx context.Context, field graphql.CollectedField, obj *model.PortfolioItem) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "PortfolioItem",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AveragePrice, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_portfolio(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -482,7 +999,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().User(rctx)
+		return ec.resolvers.Query().Portfolio(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -494,9 +1011,77 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.([]*model.PortfolioItem)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNPortfolioItem2ᚕᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐPortfolioItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_trades(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Trades(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Trade)
+	fc.Result = res
+	return ec.marshalNTrade2ᚕᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐTrade(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_dividends(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Dividends(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Dividend)
+	fc.Result = res
+	return ec.marshalNDividend2ᚕᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐDividend(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -599,7 +1184,7 @@ func (ec *executionContext) _Trade_date(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Trade_action(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
@@ -840,7 +1425,7 @@ func (ec *executionContext) _Trade_price_factor(ctx context.Context, field graph
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Trade_user_id(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+func (ec *executionContext) _TradeBody_data(ctx context.Context, field graphql.CollectedField, obj *model.TradeBody) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -848,7 +1433,41 @@ func (ec *executionContext) _Trade_user_id(ctx context.Context, field graphql.Co
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Trade",
+		Object:   "TradeBody",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Trade)
+	fc.Result = res
+	return ec.marshalNTrade2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐTrade(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TradeBody_user_id(ctx context.Context, field graphql.CollectedField, obj *model.TradeBody) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "TradeBody",
 		Field:    field,
 		Args:     nil,
 		IsMethod: false,
@@ -872,142 +1491,6 @@ func (ec *executionContext) _Trade_user_id(ctx context.Context, field graphql.Co
 	res := resTmp.(primitive.ObjectID)
 	fc.Result = res
 	return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _User_name(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "User",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _User_auth_credentials(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "User",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AuthCredentials, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.AuthCredentials)
-	fc.Result = res
-	return ec.marshalNAuthCredentials2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _User_wallets_credentials(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "User",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.WalletsCredentials, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.WalletsCredentials)
-	fc.Result = res
-	return ec.marshalNWalletsCredentials2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _WalletsCredentials_cei(ctx context.Context, field graphql.CollectedField, obj *model.WalletsCredentials) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "WalletsCredentials",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cei, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.Cei)
-	fc.Result = res
-	return ec.marshalNCEI2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐCei(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -2073,24 +2556,49 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** object.gotpl ****************************
 
-var authCredentialsImplementors = []string{"AuthCredentials"}
+var dividendImplementors = []string{"Dividend"}
 
-func (ec *executionContext) _AuthCredentials(ctx context.Context, sel ast.SelectionSet, obj *model.AuthCredentials) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, authCredentialsImplementors)
+func (ec *executionContext) _Dividend(ctx context.Context, sel ast.SelectionSet, obj *model.Dividend) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, dividendImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("AuthCredentials")
-		case "email":
-			out.Values[i] = ec._AuthCredentials_email(ctx, field, obj)
+			out.Values[i] = graphql.MarshalString("Dividend")
+		case "date":
+			out.Values[i] = ec._Dividend_date(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "activated":
-			out.Values[i] = ec._AuthCredentials_activated(ctx, field, obj)
+		case "symbol":
+			out.Values[i] = ec._Dividend_symbol(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "type":
+			out.Values[i] = ec._Dividend_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "base_quantity":
+			out.Values[i] = ec._Dividend_base_quantity(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "price_factor":
+			out.Values[i] = ec._Dividend_price_factor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "gross_income":
+			out.Values[i] = ec._Dividend_gross_income(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "net_income":
+			out.Values[i] = ec._Dividend_net_income(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2105,19 +2613,98 @@ func (ec *executionContext) _AuthCredentials(ctx context.Context, sel ast.Select
 	return out
 }
 
-var cEIImplementors = []string{"CEI"}
+var dividendBodyImplementors = []string{"DividendBody"}
 
-func (ec *executionContext) _CEI(ctx context.Context, sel ast.SelectionSet, obj *model.Cei) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, cEIImplementors)
+func (ec *executionContext) _DividendBody(ctx context.Context, sel ast.SelectionSet, obj *model.DividendBody) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, dividendBodyImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("CEI")
-		case "user":
-			out.Values[i] = ec._CEI_user(ctx, field, obj)
+			out.Values[i] = graphql.MarshalString("DividendBody")
+		case "data":
+			out.Values[i] = ec._DividendBody_data(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "user_id":
+			out.Values[i] = ec._DividendBody_user_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var portfolioBodyImplementors = []string{"PortfolioBody"}
+
+func (ec *executionContext) _PortfolioBody(ctx context.Context, sel ast.SelectionSet, obj *model.PortfolioBody) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, portfolioBodyImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PortfolioBody")
+		case "data":
+			out.Values[i] = ec._PortfolioBody_data(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "user_id":
+			out.Values[i] = ec._PortfolioBody_user_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var portfolioItemImplementors = []string{"PortfolioItem"}
+
+func (ec *executionContext) _PortfolioItem(ctx context.Context, sel ast.SelectionSet, obj *model.PortfolioItem) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, portfolioItemImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PortfolioItem")
+		case "symbol":
+			out.Values[i] = ec._PortfolioItem_symbol(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "market":
+			out.Values[i] = ec._PortfolioItem_market(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "amount":
+			out.Values[i] = ec._PortfolioItem_amount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "average_price":
+			out.Values[i] = ec._PortfolioItem_average_price(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2147,7 +2734,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "user":
+		case "portfolio":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -2155,7 +2742,35 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_user(ctx, field)
+				res = ec._Query_portfolio(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "trades":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_trades(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "dividends":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_dividends(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2227,72 +2842,35 @@ func (ec *executionContext) _Trade(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var tradeBodyImplementors = []string{"TradeBody"}
+
+func (ec *executionContext) _TradeBody(ctx context.Context, sel ast.SelectionSet, obj *model.TradeBody) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, tradeBodyImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TradeBody")
+		case "data":
+			out.Values[i] = ec._TradeBody_data(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "user_id":
-			out.Values[i] = ec._Trade_user_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var userImplementors = []string{"User"}
-
-func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *model.User) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, userImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("User")
-		case "name":
-			out.Values[i] = ec._User_name(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "auth_credentials":
-			out.Values[i] = ec._User_auth_credentials(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "wallets_credentials":
-			out.Values[i] = ec._User_wallets_credentials(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var walletsCredentialsImplementors = []string{"WalletsCredentials"}
-
-func (ec *executionContext) _WalletsCredentials(ctx context.Context, sel ast.SelectionSet, obj *model.WalletsCredentials) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, walletsCredentialsImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("WalletsCredentials")
-		case "cei":
-			out.Values[i] = ec._WalletsCredentials_cei(ctx, field, obj)
+			out.Values[i] = ec._TradeBody_user_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2552,20 +3130,6 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAuthCredentials2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx context.Context, sel ast.SelectionSet, v model.AuthCredentials) graphql.Marshaler {
-	return ec._AuthCredentials(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNAuthCredentials2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx context.Context, sel ast.SelectionSet, v *model.AuthCredentials) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._AuthCredentials(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	return graphql.UnmarshalBoolean(v)
 }
@@ -2580,32 +3144,55 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNCEI2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐCei(ctx context.Context, sel ast.SelectionSet, v model.Cei) graphql.Marshaler {
-	return ec._CEI(ctx, sel, &v)
+func (ec *executionContext) marshalNDividend2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐDividend(ctx context.Context, sel ast.SelectionSet, v model.Dividend) graphql.Marshaler {
+	return ec._Dividend(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCEI2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐCei(ctx context.Context, sel ast.SelectionSet, v *model.Cei) graphql.Marshaler {
+func (ec *executionContext) marshalNDividend2ᚕᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐDividend(ctx context.Context, sel ast.SelectionSet, v []*model.Dividend) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalODividend2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐDividend(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNDividend2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐDividend(ctx context.Context, sel ast.SelectionSet, v *model.Dividend) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return ec._CEI(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNDateTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
-	return custom_scalars.UnmarshalDateTime(v)
-}
-
-func (ec *executionContext) marshalNDateTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
-	res := custom_scalars.MarshalDateTime(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
+	return ec._Dividend(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
@@ -2636,6 +3223,57 @@ func (ec *executionContext) marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriver
 	return res
 }
 
+func (ec *executionContext) marshalNPortfolioItem2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐPortfolioItem(ctx context.Context, sel ast.SelectionSet, v model.PortfolioItem) graphql.Marshaler {
+	return ec._PortfolioItem(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPortfolioItem2ᚕᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐPortfolioItem(ctx context.Context, sel ast.SelectionSet, v []*model.PortfolioItem) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPortfolioItem2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐPortfolioItem(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNPortfolioItem2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐPortfolioItem(ctx context.Context, sel ast.SelectionSet, v *model.PortfolioItem) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._PortfolioItem(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalString(v)
 }
@@ -2650,32 +3288,69 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
-	return ec._User(ctx, sel, &v)
+func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+	return graphql.UnmarshalTime(v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	res := graphql.MarshalTime(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) marshalNTrade2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐTrade(ctx context.Context, sel ast.SelectionSet, v model.Trade) graphql.Marshaler {
+	return ec._Trade(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNTrade2ᚕᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐTrade(ctx context.Context, sel ast.SelectionSet, v []*model.Trade) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOTrade2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐTrade(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNTrade2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐTrade(ctx context.Context, sel ast.SelectionSet, v *model.Trade) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return ec._User(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNWalletsCredentials2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx context.Context, sel ast.SelectionSet, v model.WalletsCredentials) graphql.Marshaler {
-	return ec._WalletsCredentials(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNWalletsCredentials2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx context.Context, sel ast.SelectionSet, v *model.WalletsCredentials) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._WalletsCredentials(ctx, sel, v)
+	return ec._Trade(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -2927,6 +3602,28 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
 }
 
+func (ec *executionContext) marshalODividend2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐDividend(ctx context.Context, sel ast.SelectionSet, v model.Dividend) graphql.Marshaler {
+	return ec._Dividend(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalODividend2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐDividend(ctx context.Context, sel ast.SelectionSet, v *model.Dividend) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Dividend(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOPortfolioItem2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐPortfolioItem(ctx context.Context, sel ast.SelectionSet, v model.PortfolioItem) graphql.Marshaler {
+	return ec._PortfolioItem(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOPortfolioItem2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐPortfolioItem(ctx context.Context, sel ast.SelectionSet, v *model.PortfolioItem) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._PortfolioItem(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalString(v)
 }
@@ -2948,6 +3645,17 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return ec.marshalOString2string(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOTrade2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐTrade(ctx context.Context, sel ast.SelectionSet, v model.Trade) graphql.Marshaler {
+	return ec._Trade(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOTrade2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐTrade(ctx context.Context, sel ast.SelectionSet, v *model.Trade) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Trade(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {
