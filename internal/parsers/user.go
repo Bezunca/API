@@ -1,8 +1,8 @@
 package parsers
 
 import (
-	"bezuncapi/internal/models"
 	"context"
+	"github.com/Bezunca/API/internal/models"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

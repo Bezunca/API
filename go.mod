@@ -1,4 +1,4 @@
-module bezuncapi
+module github.com/Bezunca/API
 
 go 1.14
 

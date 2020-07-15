@@ -29,7 +29,6 @@ type ConfirmRegistrationForm struct {
 }
 
 func ValidateUserLogin(ctx echo.Context) (LoginForm, map[string]string) {
-
 	userEmail, userPassword, ok := ctx.Request().BasicAuth()
 	if !ok {
 		return LoginForm{}, map[string]string{"general": "Formulário inválido"}

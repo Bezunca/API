@@ -2,19 +2,74 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+type AuthCredentials struct {
+	Email     string `json:"email" bson:"email"`
+	Activated bool   `json:"activated" bson:"activated"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type Cei struct {
+	User string `json:"user" bson:"user"`
+}
+
+type Dividend struct {
+	Date         time.Time `json:"date" bson:"date"`
+	Symbol       string    `json:"symbol" bson:"symbol"`
+	Type         string    `json:"type" bson:"type"`
+	BaseQuantity int       `json:"base_quantity" bson:"base_quantity"`
+	PriceFactor  int       `json:"price_factor" bson:"price_factor"`
+	GrossIncome  int       `json:"gross_income" bson:"gross_income"`
+	NetIncome    int       `json:"net_income" bson:"net_income"`
+}
+
+type DividendBody struct {
+	Data   *Dividend          `json:"data" bson:"data"`
+	UserID primitive.ObjectID `json:"user_id" bson:"user_id"`
+}
+
+type PortfolioBody struct {
+	Data   *PortfolioItem     `json:"data" bson:"data"`
+	UserID primitive.ObjectID `json:"user_id" bson:"user_id"`
+}
+
+type PortfolioItem struct {
+	Symbol       string `json:"symbol" bson:"symbol"`
+	Market       string `json:"market" bson:"market"`
+	Amount       int    `json:"amount" bson:"amount"`
+	AveragePrice int    `json:"average_price" bson:"average_price"`
+}
+
+type Trade struct {
+	Date        time.Time `json:"date" bson:"date"`
+	Action      string    `json:"action" bson:"action"`
+	Expiration  string    `json:"expiration" bson:"expiration"`
+	Symbol      string    `json:"symbol" bson:"symbol"`
+	Amount      int       `json:"amount" bson:"amount"`
+	Price       int       `json:"price" bson:"price"`
+	FullPrice   int       `json:"full_price" bson:"full_price"`
+	PriceFactor int       `json:"price_factor" bson:"price_factor"`
+}
+
+type TradeBody struct {
+	Data   *Trade             `json:"data" bson:"data"`
+	UserID primitive.ObjectID `json:"user_id" bson:"user_id"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID                 primitive.ObjectID  `json:"_id" bson:"_id"`
+	Name               string              `json:"name" bson:"name"`
+	AuthCredentials    *AuthCredentials    `json:"auth_credentials" bson:"auth_credentials"`
+	WalletsCredentials *WalletsCredentials `json:"wallets_credentials" bson:"wallets_credentials"`
+	Dividends          []*Dividend         `json:"dividends" bson:"dividends"`
+	Trades             []*Trade            `json:"trades" bson:"trades"`
+	Portfolio          []*PortfolioItem    `json:"portfolio" bson:"portfolio"`
+}
+
+type WalletsCredentials struct {
+	Cei *Cei `json:"cei" bson:"cei"`
 }

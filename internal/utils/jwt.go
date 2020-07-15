@@ -1,12 +1,13 @@
 package utils
 
 import (
-	"bezuncapi/internal/database"
-	"bezuncapi/internal/models"
 	"errors"
+	"github.com/Bezunca/API/internal/database"
+	"github.com/Bezunca/API/internal/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strings"
 	"time"
 )
 
@@ -39,8 +40,8 @@ func DecodeToken(tokenString, secretKey string) (jwt.MapClaims, error) {
 }
 
 func ValidateToken(ctx echo.Context, token, secret string) (models.User, error) {
-
-	decoded, err := DecodeToken(token, secret)
+	bearerToken := strings.Replace(token, "Bearer ", "", 1)
+	decoded, err := DecodeToken(bearerToken, secret)
 	if err != nil {
 		return models.User{}, err
 	}

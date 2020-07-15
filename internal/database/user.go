@@ -1,9 +1,9 @@
 package database
 
 import (
-	"bezuncapi/internal/models"
-	"bezuncapi/internal/parsers"
 	"errors"
+	"github.com/Bezunca/API/internal/models"
+	"github.com/Bezunca/API/internal/parsers"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

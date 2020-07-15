@@ -1,12 +1,13 @@
 package main
 
 import (
-	"bezuncapi/internal/app"
-	"bezuncapi/internal/app/controllers/b3"
-	"bezuncapi/internal/config"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/Bezunca/API/internal/app"
+	"github.com/Bezunca/API/internal/app/controllers/b3"
+	"github.com/Bezunca/API/internal/app/middleware"
+	"github.com/Bezunca/API/internal/config"
 	"io/ioutil"
 	"os"
 	"os/signal"
@@ -70,13 +71,13 @@ func main() {
 	}
 
 	// Pre Middleware
-	app.PreMiddleware(e)
+	middleware.PreMiddleware(e)
 
 	// Middleware
-	app.Middleware(e)
+	middleware.Middleware(e)
 
 	// Routes
-	app.Routes(e.Router())
+	app.Routes(e)
 
 	if configs.Debug {
 		e.Logger.SetLevel(log.DEBUG)

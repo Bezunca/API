@@ -26,6 +26,11 @@ type (
 		SecretEmail string `config:"secret-email;required"`
 	}
 
+	database struct {
+		Name           string `config:"name;default=bezunca"`
+		UserCollection string `config:"user-collection;default=users"`
+	}
+
 	Config struct {
 		Debug   bool   `config:"debug;default=false"`
 		Address string `config:"address;default=localhost"`
@@ -41,9 +46,10 @@ type (
 		// B3 Fetch Prices Stuff
 		B3CacheTimeout time.Duration `config:"b3-cache-timeout;default=10m"`
 
-		JWT     jwt
-		MongoDB config.MongoConfigs
-		ACME    acme
+		JWT      jwt
+		MongoDB  config.MongoConfigs
+		ACME     acme
+		Database database
 	}
 )
 

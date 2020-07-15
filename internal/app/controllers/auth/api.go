@@ -1,11 +1,12 @@
 package auth
 
 import (
-	"bezuncapi/internal/config"
-	"bezuncapi/internal/database"
-	"bezuncapi/internal/models"
-	"bezuncapi/internal/utils"
-	"bezuncapi/internal/validators"
+	"github.com/Bezunca/API/internal/app/context"
+	"github.com/Bezunca/API/internal/config"
+	"github.com/Bezunca/API/internal/database"
+	"github.com/Bezunca/API/internal/models"
+	"github.com/Bezunca/API/internal/utils"
+	"github.com/Bezunca/API/internal/validators"
 	"net/http"
 	"time"
 
@@ -132,7 +133,6 @@ func ResetPassword(ctx echo.Context) error {
 }
 
 func Login(ctx echo.Context) error {
-
 	loginForm, validationErrors := validators.ValidateUserLogin(ctx)
 	if validationErrors != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": validationErrors})
@@ -164,7 +164,9 @@ func Login(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, map[string]string{"token": token})
 }
 
-func Info(ctx echo.Context, user models.User) error {
+func Info(c echo.Context) error {
+	ctx := c.(*context.BezuncAPIContext)
+	user := ctx.User()
 
 	appInfo := models.AppInfo{
 		Cei: user.WalletsCredentials.Cei.User != "",

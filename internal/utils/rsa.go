@@ -1,13 +1,13 @@
 package utils
 
 import (
-	"bezuncapi/internal/config"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
+	"github.com/Bezunca/API/internal/config"
 	"io/ioutil"
 )
 
