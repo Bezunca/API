@@ -56,3 +56,11 @@ models:
       - github.com/99designs/gqlgen/graphql.Int32
   ObjectID:
     model: github.com/Bezunca/API/custom_scalars.ObjectID
+  User:
+    fields:
+      dividends:
+        resolver: true # force a resolver to be generated
+      trades:
+        resolver: true # force a resolver to be generated
+      portfolio:
+        resolver: true # force a resolver to be generated

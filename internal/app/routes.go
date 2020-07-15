@@ -46,7 +46,13 @@ func graphqlHandler(c echo.Context) error {
 	ctx := c.(*internalContext.BezuncAPIContext)
 	user := ctx.User()
 
-	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	h := handler.NewDefaultServer(
+		generated.NewExecutableSchema(
+			generated.Config{
+				Resolvers: &graph.Resolver{},
+			},
+		),
+	)
 
 	h.ServeHTTP(
 		c.Response(),

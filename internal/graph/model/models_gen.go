@@ -8,6 +8,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type AuthCredentials struct {
+	Email     string `json:"email" bson:"email"`
+	Activated bool   `json:"activated" bson:"activated"`
+}
+
+type Cei struct {
+	User string `json:"user" bson:"user"`
+}
+
 type Dividend struct {
 	Date         time.Time `json:"date" bson:"date"`
 	Symbol       string    `json:"symbol" bson:"symbol"`
@@ -49,4 +58,18 @@ type Trade struct {
 type TradeBody struct {
 	Data   *Trade             `json:"data" bson:"data"`
 	UserID primitive.ObjectID `json:"user_id" bson:"user_id"`
+}
+
+type User struct {
+	ID                 primitive.ObjectID  `json:"_id" bson:"_id"`
+	Name               string              `json:"name" bson:"name"`
+	AuthCredentials    *AuthCredentials    `json:"auth_credentials" bson:"auth_credentials"`
+	WalletsCredentials *WalletsCredentials `json:"wallets_credentials" bson:"wallets_credentials"`
+	Dividends          []*Dividend         `json:"dividends" bson:"dividends"`
+	Trades             []*Trade            `json:"trades" bson:"trades"`
+	Portfolio          []*PortfolioItem    `json:"portfolio" bson:"portfolio"`
+}
+
+type WalletsCredentials struct {
+	Cei *Cei `json:"cei" bson:"cei"`
 }

@@ -1,6 +1,21 @@
 scalar Time
 scalar ObjectID
 
+type Dividend {
+  date: Time!
+  symbol: String!
+  type: String!
+  base_quantity: Int!
+  price_factor: Int!
+  gross_income: Int!
+  net_income: Int!
+}
+
+type DividendBody {
+  data: Dividend!
+  user_id: ObjectID!
+}
+
 type PortfolioItem {
   symbol: String!
   market: String!
@@ -29,34 +44,30 @@ type TradeBody {
   user_id: ObjectID!
 }
 
-
-type Dividend {
-  date: Time!
-  symbol: String!
-  type: String!
-  base_quantity: Int!
-  price_factor: Int!
-  gross_income: Int!
-  net_income: Int!
+type AuthCredentials {
+  email: String!
+  activated: Boolean!
 }
 
-type DividendBody {
-  data: Dividend!
-  user_id: ObjectID!
+type CEI{
+  user: String!
 }
 
-type HistoricalPrice {
-  date: Time!
-  symbol: String!
-  type: String!
-  base_quantity: Int!
-  price_factor: Int!
-  gross_income: Int!
-  net_income: Int!
+type WalletsCredentials{
+  cei: CEI!
 }
+
+type User {
+  _id: ObjectID!
+  name: String!
+  auth_credentials: AuthCredentials!
+  wallets_credentials: WalletsCredentials!
+  dividends: [Dividend]!
+  trades: [Trade]!
+  portfolio: [PortfolioItem]!
+}
+
 
 type Query {
-  portfolio: [PortfolioItem]!
-  trades: [Trade]!
-  dividends: [Dividend]!
+  user: User!
 }
