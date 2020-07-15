@@ -2,14 +2,14 @@ package graph
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
+//go:generate go run github.com/99designs/gqlgen
 
 import (
-	echoContext "bezuncapi/internal/app/context"
-	"bezuncapi/internal/config"
-	"bezuncapi/internal/graph/generated"
-	"bezuncapi/internal/graph/model"
 	"context"
-	"fmt"
+	internalContext "github.com/Bezunca/API/internal/app/context"
+	"github.com/Bezunca/API/internal/config"
+	"github.com/Bezunca/API/internal/graph/generated"
+	"github.com/Bezunca/API/internal/graph/model"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,17 +18,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (r *queryResolver) User(c context.Context, name string) (*model.User, error) {
+func (r *queryResolver) User(c context.Context) (*model.User, error) {
 	configs := config.Get()
-	ctx := c.(*echoContext.GraphQLContext)
-	_user := ctx.User()
-
-	fmt.Print(_user)
-
-	var filters []bson.E
-	if name != "" {
-		filters = append(filters, bson.E{Key: "name", Value: name})
-	}
+	ctx := &internalContext.GraphQLContext{Context: c}
 
 	c, cancel := context.WithTimeout(ctx, 60*time.Second)
 	defer cancel()
@@ -37,7 +29,12 @@ func (r *queryResolver) User(c context.Context, name string) (*model.User, error
 	result := mongo_connection.Get().
 		Database(configs.Database.Name).
 		Collection(configs.Database.UserCollection).
-		FindOne(c, filters)
+		FindOne(
+			c,
+		[]bson.E{
+			{Key: "_id", Value: ctx.User().ID},
+		},
+	)
 	if err := result.Err(); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil

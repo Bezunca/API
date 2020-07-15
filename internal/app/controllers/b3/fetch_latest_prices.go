@@ -1,7 +1,7 @@
 package b3
 
 import (
-	"bezuncapi/internal/config"
+	"github.com/Bezunca/API/internal/config"
 	"net/http"
 
 	"github.com/Bezunca/b3lib/fetch_price"

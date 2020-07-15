@@ -3,18 +3,21 @@
 package generated
 
 import (
-	"bezuncapi/internal/graph/model"
 	"bytes"
 	"context"
 	"errors"
 	"strconv"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/Bezunca/API/custom_scalars"
+	"github.com/Bezunca/API/internal/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -52,7 +55,19 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		User func(childComplexity int, name string) int
+		User func(childComplexity int) int
+	}
+
+	Trade struct {
+		Action      func(childComplexity int) int
+		Amount      func(childComplexity int) int
+		Date        func(childComplexity int) int
+		Expiration  func(childComplexity int) int
+		FullPrice   func(childComplexity int) int
+		Price       func(childComplexity int) int
+		PriceFactor func(childComplexity int) int
+		Symbol      func(childComplexity int) int
+		UserID      func(childComplexity int) int
 	}
 
 	User struct {
@@ -67,7 +82,7 @@ type ComplexityRoot struct {
 }
 
 type QueryResolver interface {
-	User(ctx context.Context, name string) (*model.User, error)
+	User(ctx context.Context) (*model.User, error)
 }
 
 type executableSchema struct {
@@ -111,12 +126,70 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Query_user_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
+		return e.complexity.Query.User(childComplexity), true
+
+	case "Trade.action":
+		if e.complexity.Trade.Action == nil {
+			break
 		}
 
-		return e.complexity.Query.User(childComplexity, args["name"].(string)), true
+		return e.complexity.Trade.Action(childComplexity), true
+
+	case "Trade.amount":
+		if e.complexity.Trade.Amount == nil {
+			break
+		}
+
+		return e.complexity.Trade.Amount(childComplexity), true
+
+	case "Trade.date":
+		if e.complexity.Trade.Date == nil {
+			break
+		}
+
+		return e.complexity.Trade.Date(childComplexity), true
+
+	case "Trade.expiration":
+		if e.complexity.Trade.Expiration == nil {
+			break
+		}
+
+		return e.complexity.Trade.Expiration(childComplexity), true
+
+	case "Trade.full_price":
+		if e.complexity.Trade.FullPrice == nil {
+			break
+		}
+
+		return e.complexity.Trade.FullPrice(childComplexity), true
+
+	case "Trade.price":
+		if e.complexity.Trade.Price == nil {
+			break
+		}
+
+		return e.complexity.Trade.Price(childComplexity), true
+
+	case "Trade.price_factor":
+		if e.complexity.Trade.PriceFactor == nil {
+			break
+		}
+
+		return e.complexity.Trade.PriceFactor(childComplexity), true
+
+	case "Trade.symbol":
+		if e.complexity.Trade.Symbol == nil {
+			break
+		}
+
+		return e.complexity.Trade.Symbol(childComplexity), true
+
+	case "Trade.user_id":
+		if e.complexity.Trade.UserID == nil {
+			break
+		}
+
+		return e.complexity.Trade.UserID(childComplexity), true
 
 	case "User.auth_credentials":
 		if e.complexity.User.AuthCredentials == nil {
@@ -196,7 +269,9 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	&ast.Source{Name: "internal/graph/user.graphqls", Input: `
+	&ast.Source{Name: "internal/graph/user.graphqls", Input: `scalar DateTime
+scalar ObjectID
+
 type AuthCredentials {
   email: String!
   activated: Boolean!
@@ -217,7 +292,19 @@ type User {
 }
 
 type Query {
-  user(name: String!): User!
+  user: User!
+}
+
+type Trade {
+  date: DateTime!
+  action: String!
+  expiration: String!
+  symbol: String!
+  amount: Int!
+  price: Int!
+  full_price: Int!
+  price_factor: Int!
+  user_id: ObjectID!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -227,20 +314,6 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // region    ***************************** args.gotpl *****************************
 
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["name"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["name"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -407,16 +480,9 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_user_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().User(rctx, args["name"].(string))
+		return ec.resolvers.Query().User(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -430,7 +496,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖbezuncapiᚋinternalᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -502,6 +568,312 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Trade_date(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Date, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trade_action(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Action, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trade_expiration(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Expiration, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trade_symbol(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Symbol, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trade_amount(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Amount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trade_price(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Price, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trade_full_price(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FullPrice, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trade_price_factor(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PriceFactor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trade_user_id(ctx context.Context, field graphql.CollectedField, obj *model.Trade) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Trade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(primitive.ObjectID)
+	fc.Result = res
+	return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _User_name(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -567,7 +939,7 @@ func (ec *executionContext) _User_auth_credentials(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.AuthCredentials)
 	fc.Result = res
-	return ec.marshalNAuthCredentials2ᚖbezuncapiᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx, field.Selections, res)
+	return ec.marshalNAuthCredentials2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_wallets_credentials(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
@@ -601,7 +973,7 @@ func (ec *executionContext) _User_wallets_credentials(ctx context.Context, field
 	}
 	res := resTmp.(*model.WalletsCredentials)
 	fc.Result = res
-	return ec.marshalNWalletsCredentials2ᚖbezuncapiᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx, field.Selections, res)
+	return ec.marshalNWalletsCredentials2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _WalletsCredentials_cei(ctx context.Context, field graphql.CollectedField, obj *model.WalletsCredentials) (ret graphql.Marshaler) {
@@ -635,7 +1007,7 @@ func (ec *executionContext) _WalletsCredentials_cei(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Cei)
 	fc.Result = res
-	return ec.marshalNCEI2ᚖbezuncapiᚋinternalᚋgraphᚋmodelᚐCei(ctx, field.Selections, res)
+	return ec.marshalNCEI2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐCei(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -1804,6 +2176,73 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
+var tradeImplementors = []string{"Trade"}
+
+func (ec *executionContext) _Trade(ctx context.Context, sel ast.SelectionSet, obj *model.Trade) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, tradeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Trade")
+		case "date":
+			out.Values[i] = ec._Trade_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "action":
+			out.Values[i] = ec._Trade_action(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "expiration":
+			out.Values[i] = ec._Trade_expiration(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "symbol":
+			out.Values[i] = ec._Trade_symbol(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "amount":
+			out.Values[i] = ec._Trade_amount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "price":
+			out.Values[i] = ec._Trade_price(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "full_price":
+			out.Values[i] = ec._Trade_full_price(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "price_factor":
+			out.Values[i] = ec._Trade_price_factor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "user_id":
+			out.Values[i] = ec._Trade_user_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var userImplementors = []string{"User"}
 
 func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *model.User) graphql.Marshaler {
@@ -2113,11 +2552,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAuthCredentials2bezuncapiᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx context.Context, sel ast.SelectionSet, v model.AuthCredentials) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthCredentials2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx context.Context, sel ast.SelectionSet, v model.AuthCredentials) graphql.Marshaler {
 	return ec._AuthCredentials(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthCredentials2ᚖbezuncapiᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx context.Context, sel ast.SelectionSet, v *model.AuthCredentials) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthCredentials2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐAuthCredentials(ctx context.Context, sel ast.SelectionSet, v *model.AuthCredentials) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2141,11 +2580,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNCEI2bezuncapiᚋinternalᚋgraphᚋmodelᚐCei(ctx context.Context, sel ast.SelectionSet, v model.Cei) graphql.Marshaler {
+func (ec *executionContext) marshalNCEI2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐCei(ctx context.Context, sel ast.SelectionSet, v model.Cei) graphql.Marshaler {
 	return ec._CEI(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCEI2ᚖbezuncapiᚋinternalᚋgraphᚋmodelᚐCei(ctx context.Context, sel ast.SelectionSet, v *model.Cei) graphql.Marshaler {
+func (ec *executionContext) marshalNCEI2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐCei(ctx context.Context, sel ast.SelectionSet, v *model.Cei) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2153,6 +2592,48 @@ func (ec *executionContext) marshalNCEI2ᚖbezuncapiᚋinternalᚋgraphᚋmodel�
 		return graphql.Null
 	}
 	return ec._CEI(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNDateTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+	return custom_scalars.UnmarshalDateTime(v)
+}
+
+func (ec *executionContext) marshalNDateTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	res := custom_scalars.MarshalDateTime(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx context.Context, v interface{}) (primitive.ObjectID, error) {
+	return custom_scalars.UnmarshalObjectID(v)
+}
+
+func (ec *executionContext) marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx context.Context, sel ast.SelectionSet, v primitive.ObjectID) graphql.Marshaler {
+	res := custom_scalars.MarshalObjectID(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -2169,11 +2650,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNUser2bezuncapiᚋinternalᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖbezuncapiᚋinternalᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2183,11 +2664,11 @@ func (ec *executionContext) marshalNUser2ᚖbezuncapiᚋinternalᚋgraphᚋmodel
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNWalletsCredentials2bezuncapiᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx context.Context, sel ast.SelectionSet, v model.WalletsCredentials) graphql.Marshaler {
+func (ec *executionContext) marshalNWalletsCredentials2githubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx context.Context, sel ast.SelectionSet, v model.WalletsCredentials) graphql.Marshaler {
 	return ec._WalletsCredentials(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNWalletsCredentials2ᚖbezuncapiᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx context.Context, sel ast.SelectionSet, v *model.WalletsCredentials) graphql.Marshaler {
+func (ec *executionContext) marshalNWalletsCredentials2ᚖgithubᚗcomᚋBezuncaᚋAPIᚋinternalᚋgraphᚋmodelᚐWalletsCredentials(ctx context.Context, sel ast.SelectionSet, v *model.WalletsCredentials) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")

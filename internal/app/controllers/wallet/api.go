@@ -1,10 +1,10 @@
 package wallet
 
 import (
-	"bezuncapi/internal/app/context"
-	"bezuncapi/internal/models"
-	"bezuncapi/internal/utils"
-	"bezuncapi/internal/validators"
+	"github.com/Bezunca/API/internal/app/context"
+	"github.com/Bezunca/API/internal/models"
+	"github.com/Bezunca/API/internal/utils"
+	"github.com/Bezunca/API/internal/validators"
 	cei "github.com/Bezunca/ceilib/scraper"
 	"github.com/labstack/echo/v4"
 	"net/http"

@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"bezuncapi/internal/config"
-	"bezuncapi/internal/models"
-	"bezuncapi/internal/utils"
+	"github.com/Bezunca/API/internal/config"
+	"github.com/Bezunca/API/internal/models"
+	"github.com/Bezunca/API/internal/utils"
 	"net/url"
 	"time"
 )

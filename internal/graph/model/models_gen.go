@@ -2,6 +2,12 @@
 
 package model
 
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 type AuthCredentials struct {
 	Email     string `json:"email" bson:"email"`
 	Activated bool   `json:"activated" bson:"activated"`
@@ -9,6 +15,18 @@ type AuthCredentials struct {
 
 type Cei struct {
 	User string `json:"user" bson:"user"`
+}
+
+type Trade struct {
+	Date        time.Time          `json:"date" bson:"date"`
+	Action      string             `json:"action" bson:"action"`
+	Expiration  string             `json:"expiration" bson:"expiration"`
+	Symbol      string             `json:"symbol" bson:"symbol"`
+	Amount      int                `json:"amount" bson:"amount"`
+	Price       int                `json:"price" bson:"price"`
+	FullPrice   int                `json:"full_price" bson:"full_price"`
+	PriceFactor int                `json:"price_factor" bson:"price_factor"`
+	UserID      primitive.ObjectID `json:"user_id" bson:"user_id"`
 }
 
 type User struct {

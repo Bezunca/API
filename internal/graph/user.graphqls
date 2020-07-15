@@ -1,3 +1,5 @@
+scalar DateTime
+scalar ObjectID
 
 type AuthCredentials {
   email: String!
@@ -19,5 +21,17 @@ type User {
 }
 
 type Query {
-  user(name: String!): User!
+  user: User!
+}
+
+type Trade {
+  date: DateTime!
+  action: String!
+  expiration: String!
+  symbol: String!
+  amount: Int!
+  price: Int!
+  full_price: Int!
+  price_factor: Int!
+  user_id: ObjectID!
 }

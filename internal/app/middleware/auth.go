@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"bezuncapi/internal/config"
-	"bezuncapi/internal/utils"
+	"github.com/Bezunca/API/internal/config"
+	"github.com/Bezunca/API/internal/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )

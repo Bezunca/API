@@ -1,12 +1,12 @@
 package auth
 
 import (
-	"bezuncapi/internal/app/context"
-	"bezuncapi/internal/config"
-	"bezuncapi/internal/database"
-	"bezuncapi/internal/models"
-	"bezuncapi/internal/utils"
-	"bezuncapi/internal/validators"
+	"github.com/Bezunca/API/internal/app/context"
+	"github.com/Bezunca/API/internal/config"
+	"github.com/Bezunca/API/internal/database"
+	"github.com/Bezunca/API/internal/models"
+	"github.com/Bezunca/API/internal/utils"
+	"github.com/Bezunca/API/internal/validators"
 	"net/http"
 	"time"
 

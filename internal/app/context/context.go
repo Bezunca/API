@@ -1,8 +1,8 @@
 package context
 
 import (
-	"bezuncapi/internal/models"
 	"context"
+	"github.com/Bezunca/API/internal/models"
 	"github.com/labstack/echo/v4"
 )
 
@@ -24,4 +24,11 @@ type GraphQLContext struct {
 // User returns user struct for current request
 func (ctx *GraphQLContext) User() models.User {
 	return ctx.Value("user").(models.User)
+}
+
+// InjectBezuncAPIContext is a function to be used as a middleware to envelope DockingBayContext on echo.Context
+func InjectBezuncAPIContext(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		return next(&BezuncAPIContext{ctx})
+	}
 }

@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"bezuncapi/internal/database"
-	"bezuncapi/internal/models"
+	"github.com/Bezunca/API/internal/database"
+	"github.com/Bezunca/API/internal/models"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"

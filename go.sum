@@ -1,5 +1,6 @@
 github.com/99designs/gqlgen v0.11.3 h1:oFSxl1DFS9X///uHV3y6CEfpcXWrDUxVblR4Xib2bs4=
 github.com/99designs/gqlgen v0.11.3/go.mod h1:RgX5GRRdDWNkh4pBrdzNpNPFVsdoUFY2+adM6nb1N+4=
+github.com/Bezunca/API v0.0.0-20200715010205-a5f012bc54f6 h1:G6TquQbA8JPhjhwhnFIL/cx5kk9+gASAbYndeIwwLzE=
 github.com/Bezunca/b3lib v0.0.3 h1:RnHAB1HAFa+ji9L/lKBermQzIClFgXX4mrjgCDr/9jg=
 github.com/Bezunca/b3lib v0.0.3/go.mod h1:RN8BWfgwXQSLDmlAZwpIGuTFWbqCBDGgw8mP3n2luTY=
 github.com/Bezunca/ceilib v0.0.10 h1:qfBQj5ABloLambSjHGmb1PN+mUyT+leu4BSOu8nEYHE=

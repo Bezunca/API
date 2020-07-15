@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"bezuncapi/internal/config"
 	"errors"
+	"github.com/Bezunca/API/internal/config"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )

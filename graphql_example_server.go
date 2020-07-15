@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bezuncapi/internal/graph"
-	"bezuncapi/internal/graph/generated"
+	"github.com/Bezunca/API/internal/graph"
+	"github.com/Bezunca/API/internal/graph/generated"
 	"log"
 	"net/http"
 	"os"

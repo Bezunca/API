@@ -1,14 +1,14 @@
 package app
 
 import (
-	echoContext "bezuncapi/internal/app/context"
-	"bezuncapi/internal/app/controllers/auth"
-	"bezuncapi/internal/app/controllers/b3"
-	"bezuncapi/internal/app/controllers/wallet"
-	"bezuncapi/internal/app/middleware"
-	"bezuncapi/internal/graph"
-	"bezuncapi/internal/graph/generated"
 	"context"
+	internalContext "github.com/Bezunca/API/internal/app/context"
+	"github.com/Bezunca/API/internal/app/controllers/auth"
+	"github.com/Bezunca/API/internal/app/controllers/b3"
+	"github.com/Bezunca/API/internal/app/controllers/wallet"
+	"github.com/Bezunca/API/internal/app/middleware"
+	"github.com/Bezunca/API/internal/graph"
+	"github.com/Bezunca/API/internal/graph/generated"
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -30,7 +30,7 @@ func Routes(echo *echo.Echo) {
 	echo.POST( "/auth/reset_password", auth.ResetPassword)
 	echo.POST( "/auth/login", auth.Login)
 
-	loggedRoutes := echo.Group("/", middleware.UserAuth)
+	loggedRoutes := echo.Group("", middleware.UserAuth)
 	loggedRoutes.GET( "/auth/info", auth.Info)
 	loggedRoutes.POST( "/wallet/cei_sync", wallet.CEISync)
 	loggedRoutes.POST( "/query", graphqlHandler)
@@ -43,7 +43,7 @@ func hello(ctx echo.Context) error {
 
 // GraphQL Handler
 func graphqlHandler(c echo.Context) error {
-	ctx := c.(*echoContext.BezuncAPIContext)
+	ctx := c.(*internalContext.BezuncAPIContext)
 	user := ctx.User()
 
 	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
