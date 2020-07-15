@@ -29,6 +29,8 @@ RUN apt-get update -qq \
         build-essential \
         openssh-client \
         ca-certificates \
+        tzdata \
+        zip \
     && \
     git config --global url."git@github.com:".insteadOf "https://github.com/"
 
@@ -62,29 +64,28 @@ RUN ssh-keyscan -p 22 github.com > ~/.ssh/known_hosts \
     && \
     chmod 644 ~/.ssh/known_hosts
 
-# Copying go modules files
-COPY go.mod .
-COPY go.sum .
+# Copy project sources
+COPY . .
 
 # Downloading dependencies
 RUN go mod download
 
-# Copy project sources
-COPY . .
-
 # Building project executable, cleaning useless stuff and compressing binary
-RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o "executable" ./cmd/${PROJECT_NAME} \
-    && \
-    upx --best --ultra-brute "executable"
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags='-w -s -extldflags "-static"' -o "executable" ./cmd/${PROJECT_NAME}
+
+# Compress executable size
+RUN upx --best --ultra-brute "executable"
 
 # Fix permissions and create unprivileged auth
-RUN useradd -b /home -s /bin/sh -u 1001 -g 65534 ${USERNAME} \
-    && \
-    # Setup data volumes directories
-    install -g 65534 -o 1001 -d /home/${USERNAME}/logs \
-    && \
-    # Remove setuid and setgid permissions
-    find / -perm /6000 -type f -exec chmod a-s {} \; || true
+RUN useradd -b /home -s /bin/sh -u 1001 -g 65534 ${USERNAME}
+
+# Setup data volumes directories
+RUN install -g 65534 -o 1001 -d /home/${USERNAME}/logs
+
+# Remove setuid and setgid permissions
+RUN find / -perm /6000 -type f -exec chmod a-s {} \; || true
+
+RUN zip -q -r -0 /usr/share/zoneinfo/zoneinfo.zip /usr/share/zoneinfo/
 
 # === Stage 2 - Setup runtime ==================================================
 FROM scratch
@@ -92,13 +93,14 @@ ARG PROJECT_NAME
 ARG USERNAME
 
 # Copy project data
-COPY --from=builder /src/proj/executable /usr/local/bin
+COPY --from=builder /src/proj/executable /usr/local/bin/executable
 
-# Import the auth and group files from the builder.
+## Import the auth and group files from the builder.
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /home/  /home/
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /usr/share/zoneinfo/zoneinfo.zip /
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Setup runtime
 USER ${USERNAME}
