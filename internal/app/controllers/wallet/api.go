@@ -62,6 +62,17 @@ func CEISync(c echo.Context) error {
 	ctx := c.(*context.BezuncAPIContext)
 	user := ctx.User()
 
+	user.WalletsCredentials.Cei.Status = models.SyncStatus{
+		StatusType: models.StatusPending,
+		StatusMessage: "Sincronização em andamento",
+		StatusDate: primitive.NewDateTimeFromTime(time.Now()),
+	}
+
+	updated := UpdateCEI(ctx, user.AuthCredentials.Email, *user.WalletsCredentials.Cei)
+	if !updated {
+		return ctx.JSON(http.StatusBadRequest, map[string]map[string]string{"errors": {"general": "Erro ao salvar status"}})
+	}
+
 	UserScrapingInfo := models.Scraping{
 		ID: user.ID,
 		WalletsCredentials: user.WalletsCredentials,
