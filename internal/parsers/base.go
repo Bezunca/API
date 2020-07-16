@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 )
 
 func ParseID(data map[string]interface{}) (primitive.ObjectID, bool) {
@@ -46,4 +47,34 @@ func ParseBool(data map[string]interface{}, fieldName string) (bool, bool) {
 	}
 
 	return fieldBool, true
+}
+
+func ParseInt32(data map[string]interface{}, fieldName string) (int32, bool) {
+
+	fieldRaw, ok := data[fieldName]
+	if !ok {
+		return 0, false
+	}
+
+	fieldInt, ok := fieldRaw.(int32)
+	if !ok {
+		return 0, false
+	}
+
+	return fieldInt, true
+}
+
+func ParseTime(data map[string]interface{}, fieldName string) (primitive.DateTime, bool) {
+
+	fieldRaw, ok := data[fieldName]
+	if !ok {
+		return primitive.NewDateTimeFromTime(time.Now()), false
+	}
+
+	fieldTime, ok := fieldRaw.(primitive.DateTime)
+	if !ok {
+		return primitive.NewDateTimeFromTime(time.Now()), false
+	}
+
+	return fieldTime, true
 }

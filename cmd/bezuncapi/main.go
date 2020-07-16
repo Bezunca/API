@@ -8,6 +8,7 @@ import (
 	"github.com/Bezunca/API/internal/app/controllers/b3"
 	"github.com/Bezunca/API/internal/app/middleware"
 	"github.com/Bezunca/API/internal/config"
+	"github.com/Bezunca/API/internal/message_broker"
 	"io/ioutil"
 	"os"
 	"os/signal"
@@ -70,6 +71,12 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
+	// Initialize RabbitMQ
+	_, err = message_broker.New(&configs.RabbitMQ, tlsConfig)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+
 	// Pre Middleware
 	middleware.PreMiddleware(e)
 
@@ -97,7 +104,6 @@ func shutdownStuff(logger echo.Logger) {
 	if err := mongo_connection.Close(); err != nil {
 		logger.Error(err)
 	}
-
 }
 
 func waitShutdown(server *echo.Echo) {

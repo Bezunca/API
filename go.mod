@@ -5,7 +5,6 @@ go 1.14
 require (
 	github.com/99designs/gqlgen v0.11.3
 	github.com/Bezunca/b3lib v0.0.3
-	github.com/Bezunca/ceilib v0.0.10
 	github.com/Bezunca/mongo_connection v0.0.1
 	github.com/Nhanderu/brdoc v1.1.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -18,6 +17,7 @@ require (
 	github.com/sendgrid/rest v2.6.0+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.6.0+incompatible
 	github.com/shopspring/decimal v1.2.0
+	github.com/streadway/amqp v1.0.0
 	github.com/vektah/gqlparser/v2 v2.0.1
 	go.mongodb.org/mongo-driver v1.3.4
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d

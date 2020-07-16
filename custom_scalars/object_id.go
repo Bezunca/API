@@ -7,7 +7,6 @@ import (
 	"io"
 )
 
-
 func MarshalObjectID(b primitive.ObjectID) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {
 		w.Write([]byte(b.Hex()))
@@ -18,7 +17,7 @@ func UnmarshalObjectID(v interface{}) (primitive.ObjectID, error) {
 	switch v := v.(type) {
 	case string:
 		oID, err := primitive.ObjectIDFromHex(v)
-		if err != nil{
+		if err != nil {
 			return primitive.ObjectID{}, err
 		}
 		return oID, nil

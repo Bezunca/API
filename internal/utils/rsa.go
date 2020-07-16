@@ -13,7 +13,7 @@ import (
 
 const CEIPassword = "cei_password"
 
-func loadPublicKey(fileName string)(*rsa.PublicKey, error){
+func loadPublicKey(fileName string) (*rsa.PublicKey, error) {
 
 	pub, err := ioutil.ReadFile(fileName)
 	if err != nil {

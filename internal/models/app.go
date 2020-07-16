@@ -1,5 +1,7 @@
 package models
 
 type AppInfo struct {
-	Cei bool `bson:"cei" json:"cei"`
+	Name  string     `json:"name"`
+	Email string     `json:"email"`
+	Cei   *SyncStatus `json:"cei"`
 }

@@ -1,13 +1,12 @@
 package config
 
 import (
-	"strings"
-	"time"
-
+	"fmt"
 	"github.com/Bezunca/mongo_connection/config"
-
 	"github.com/fogodev/openvvar"
 	"github.com/labstack/echo/v4"
+	"strings"
+	"time"
 )
 
 type (
@@ -31,6 +30,18 @@ type (
 		UserCollection string `config:"user-collection;default=users"`
 	}
 
+	RabbitMQConfig struct {
+		CEIQueue       string        `config:"cei-queue;required"`
+		User           string        `config:"user;required"`
+		Password       string        `config:"password;required"`
+		Host           string        `config:"host;required"`
+		AMQPPort       int           `config:"amqpport;required"`
+		VHost          string        `config:"vhost;"`
+		ReconnectDelay time.Duration `config:"reconnect-delay;default=2s"`
+		RestartDelay   time.Duration `config:"restart-delay;default=1s"`
+		ResendDelay    time.Duration `config:"resend-delay;default=1s"`
+	}
+
 	Config struct {
 		Debug   bool   `config:"debug;default=false"`
 		Address string `config:"address;default=localhost"`
@@ -50,11 +61,16 @@ type (
 		MongoDB  config.MongoConfigs
 		ACME     acme
 		Database database
+		RabbitMQ RabbitMQConfig
 	}
 )
 
 func (c *Config) ApplicationAddress() string {
 	return strings.Join([]string{c.Address, c.Port}, ":")
+}
+
+func (c *RabbitMQConfig) FormatRabbitMQURL() string {
+	return fmt.Sprintf("amqps://%s:%s@%s:%d/%s", c.User, c.Password, c.Host, c.AMQPPort, c.VHost)
 }
 
 var globalConfig *Config = nil

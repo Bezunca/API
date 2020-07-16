@@ -18,22 +18,23 @@ import (
 
 // Routes function setups routes in echo instance
 func Routes(echo *echo.Echo) {
-	echo.GET( "/", hello)
+	echo.GET("/", hello)
 
 	// B3 stuff
-	echo.GET( "/fetch_latest_prices", b3.FetchLatestPrices)
+	echo.GET("/fetch_latest_prices", b3.FetchLatestPrices)
 
 	// Auth
-	echo.POST( "/auth/register", auth.Register)
-	echo.POST( "/auth/confirm_registration", auth.ConfirmRegistration)
-	echo.POST( "/auth/forgot_password", auth.ForgotPassword)
-	echo.POST( "/auth/reset_password", auth.ResetPassword)
-	echo.POST( "/auth/login", auth.Login)
+	echo.POST("/auth/register", auth.Register)
+	echo.POST("/auth/confirm_registration", auth.ConfirmRegistration)
+	echo.POST("/auth/forgot_password", auth.ForgotPassword)
+	echo.POST("/auth/reset_password", auth.ResetPassword)
+	echo.POST("/auth/login", auth.Login)
 
 	loggedRoutes := echo.Group("", middleware.UserAuth)
-	loggedRoutes.GET( "/auth/info", auth.Info)
-	loggedRoutes.POST( "/wallet/cei_sync", wallet.CEISync)
-	loggedRoutes.POST( "/query", graphqlHandler)
+	loggedRoutes.GET("/auth/info", auth.Info)
+	loggedRoutes.GET("/wallet/cei_sync", wallet.CEISync)
+	loggedRoutes.POST("/wallet/cei_credentials", wallet.CEICredentials)
+	loggedRoutes.POST("/query", graphqlHandler)
 }
 
 // Placeholder Handler

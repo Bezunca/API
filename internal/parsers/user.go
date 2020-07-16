@@ -40,56 +40,6 @@ func ParseAuthCredentials(data map[string]interface{}) (models.AuthCredentials, 
 	}, true
 }
 
-func ParseCEI(data map[string]interface{}) (models.CEI, bool) {
-
-	_cei, ok := data["cei"]
-	if !ok {
-		return models.CEI{}, false
-	}
-
-	cei, ok := _cei.(map[string]interface{})
-	if !ok {
-		return models.CEI{}, false
-	}
-
-	user, ok := ParseString(cei, "user")
-	if !ok {
-		return models.CEI{}, false
-	}
-
-	password, ok := ParseString(cei, "password")
-	if !ok {
-		return models.CEI{}, false
-	}
-
-	return models.CEI{
-		User: user,
-		Password: password,
-	}, true
-}
-
-func ParseWalletsCredentials(data map[string]interface{}) (models.WalletCredentials, bool) {
-
-	_walletsCredentials, ok := data["wallets_credentials"]
-	if !ok {
-		return models.WalletCredentials{}, false
-	}
-
-	walletsCredentials, ok := _walletsCredentials.(map[string]interface{})
-	if !ok {
-		return models.WalletCredentials{}, false
-	}
-
-	cei, ok := ParseCEI(walletsCredentials)
-	if !ok {
-		cei = models.CEI{}
-	}
-
-	return models.WalletCredentials{
-		Cei: cei,
-	}, true
-}
-
 func ParseUsers(cursor *mongo.Cursor) (interface{}, bool) {
 
 	var users []models.User
@@ -119,13 +69,13 @@ func ParseUsers(cursor *mongo.Cursor) (interface{}, bool) {
 
 		walletsCredentials, ok := ParseWalletsCredentials(data)
 		if !ok {
-			walletsCredentials = models.WalletCredentials{}
+			walletsCredentials = models.WalletsCredentials{}
 		}
 
 		user := models.User{
-			ID:              id,
-			Name:            name,
-			AuthCredentials: authCredentials,
+			ID:                 id,
+			Name:               name,
+			AuthCredentials:    authCredentials,
 			WalletsCredentials: walletsCredentials,
 		}
 

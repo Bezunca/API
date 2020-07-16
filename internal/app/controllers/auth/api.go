@@ -165,11 +165,19 @@ func Login(ctx echo.Context) error {
 }
 
 func Info(c echo.Context) error {
+
 	ctx := c.(*context.BezuncAPIContext)
 	user := ctx.User()
 
+	var cei *models.SyncStatus = nil
+	if user.WalletsCredentials.Cei != nil {
+		cei = &user.WalletsCredentials.Cei.Status
+	}
+
 	appInfo := models.AppInfo{
-		Cei: user.WalletsCredentials.Cei.User != "",
+		Name: user.Name,
+		Email: user.AuthCredentials.Email,
+		Cei: cei,
 	}
 
 	return ctx.JSON(http.StatusOK, appInfo)
